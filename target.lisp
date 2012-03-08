@@ -24,6 +24,19 @@
     (left-achilles . 1)
     (left-foot . 2)))
 
+(defparameter *body-part-descriptions*
+  '((head . (slash . ((90 . (lightly scratched))
+                      (80 . (scratched))
+                      (70 . (cut))
+                      (60 . (deeply cut))
+                      (10 . (brutally lacerated, unrecognizable))
+                      ())))
+    (eye . (slash . ((90 . (lightly scratched))
+                     (80 . (scratched))
+                     (70 . (cut))
+                     (60 . (deeply cut))
+                     (10 . (slashed to pieces)))))))
+
 (defun symmetrize-body-parts (body-parts)
   (labels ((part-and-match (part acc)
              (let ((part-string (string-downcase (symbol-name (car part)))))
