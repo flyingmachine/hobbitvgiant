@@ -41,4 +41,12 @@
   (reduce #'+ (symmetrize-body-parts *asym-body-parts*) :key #'cdr))
 
 (defun hit-part (body-parts)
-  (symmetrize-body-parts (body-parts)))
+  (nth (position (random (body-part-sum)) body-parts :key #'cdr :test (target-hit-function)) body-parts))
+
+
+;; wonder if it's good style to include "function" when returning function
+(defun target-hit-function ()
+  (let ((current-position 0))
+    (lambda (target increment)
+      (incf current-position increment)
+      (> current-position target))))
