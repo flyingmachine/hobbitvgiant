@@ -1,5 +1,3 @@
-;; Parts:
-
 (defparameter *asym-body-parts*
   '((head . 3)
     (left-eye . 1)
@@ -29,20 +27,21 @@
 (defun symmetrize-body-parts (body-parts)
   (labels ((part-and-match (part acc)
              (let ((part-string (string-downcase (symbol-name (car part)))))
-               (append acc (list part) (when (search "left" part-string) (list (cons (intern (string-upcase (concatenate 'string "right" (subseq part-string 4)))) (cdr part)))))))
+               (append acc
+                       (list part)
+                       (when (search "left" part-string)
+                         (list (cons (intern (string-upcase (concatenate 'string "right" (subseq part-string 4)))) (cdr part)))))))
            (add-matching-parts (parts acc)
              (if (null parts)
                  acc
                  (add-matching-parts (cdr parts) (part-and-match (car parts) acc)))))
     (add-matching-parts body-parts nil)))
 
+(defun body-part-sum (body-parts)
+  (reduce #'+ (symmetrize-body-parts body-parts) :key #'cdr))
 
-(defun body-part-sum ()
-  (reduce #'+ (symmetrize-body-parts *asym-body-parts*) :key #'cdr))
-
-(defun hit-part (body-parts)
-  (nth (position (random (body-part-sum)) body-parts :key #'cdr :test (target-hit-function)) body-parts))
-
+(defun attack (body-parts)
+  (nth (position (random (body-part-sum body-parts)) body-parts :key #'cdr :test (target-hit-function)) body-parts))
 
 ;; wonder if it's good style to include "function" when returning function
 (defun target-hit-function ()
