@@ -27,13 +27,11 @@
     (left-foot . 2)))
 
 (defun symmetrize-body-parts (body-parts)
-  (labels ((part-and-match (part)
+  (labels ((part-and-match (part acc)
              (let ((part-string (string-downcase (symbol-name (car part)))))
-               (if (search "left" part-string)
-                   (cons part (cons (make-symbol (concatenate 'string "right" (subseq part-string 4))) (cdr part)))
-                   part)))
+               (append acc (list part) (when (search "left" part-string) (list (cons (intern (string-upcase (concatenate 'string "right" (subseq part-string 4)))) (cdr part)))))))
            (add-matching-parts (parts acc)
              (if (null parts)
-                 (nreverse acc)
-                 (add-matching-parts (cdr parts) (cons (part-and-match (car parts)) acc)))))
+                 acc
+                 (add-matching-parts (cdr parts) (part-and-match (car parts) acc)))))
     (add-matching-parts body-parts nil)))
