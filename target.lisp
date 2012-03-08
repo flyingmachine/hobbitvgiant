@@ -38,7 +38,7 @@
     (add-matching-parts body-parts nil)))
 
 (defun body-part-sum (body-parts)
-  (reduce #'+ (symmetrize-body-parts body-parts) :key #'cdr))
+  (reduce #'+ body-parts :key #'cdr))
 
 (defun attack (body-parts)
   (nth (position (random (body-part-sum body-parts)) body-parts :key #'cdr :test (target-hit-function)) body-parts))
