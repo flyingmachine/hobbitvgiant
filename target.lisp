@@ -8,9 +8,9 @@
     (nose . 1)
     (neck . 2)
     (jugular . 1)
-    (wind pipe . 1)
+    (wind-pipe . 1)
     (left-shoulder . 3)
-    (left-upper arm . 3)
+    (left-upper-arm . 3)
     (chest . 10)
     (back . 10)
     (left-forearm . 3)
@@ -35,3 +35,10 @@
                  acc
                  (add-matching-parts (cdr parts) (part-and-match (car parts) acc)))))
     (add-matching-parts body-parts nil)))
+
+
+(defun body-part-sum ()
+  (reduce #'+ (symmetrize-body-parts *asym-body-parts*) :key #'cdr))
+
+(defun hit-part (body-parts)
+  (symmetrize-body-parts (body-parts)))
