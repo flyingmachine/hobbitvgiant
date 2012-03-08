@@ -13,11 +13,8 @@
 (defun game-loop ()
   (unless (or (player-dead) (giant-dead))
     (show-player)
-    (fresh-line)
     (player-attack)
-    (fresh-line)
     (giant-attack)
-    (fresh-line)
     (game-loop)))
 
 (defun init-player ()
@@ -33,13 +30,13 @@
   (<= *giant-health* 0))
 
 (defun player-attack ()
-  (format t "You swing!")
+  (format t "You swing!~&")
   (decf *giant-health* 10))
 
 (defun giant-attack ()
-  (format t "The giant swings at you!")
+  (format t "The giant swings at you!~&")
   (decf *player-health* 45))
 
 (defun show-player ()
-  (format t "You have ~a health points." *player-health*))
+  (format t "You have ~a health points.~&" *player-health*))
 
