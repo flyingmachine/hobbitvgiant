@@ -17,9 +17,9 @@
                 (70 . (bruised))
                 (60 . (a sick purple-green-yellow color from deep bruising))
                 (10 . (deformed its underlying structure pulverized))))
-   (base-pierce-description
+   (base-pierce-descriptions
     :allocation :class
-    :reader base-pierce-description
+    :reader base-pierce-descriptions
     :initform '((90 . (lightly pierced))
                 (80 . (scratched))
                 (70 . (cut))
@@ -54,7 +54,7 @@
 
 (defmethod describe-body-part (body-part)
   (labels ((describe (health description-list)
-             (find (apply health (list body-part)) (description-list body-part) :key #'car :test (lambda (trigger-point health) (> trigger-point health)))))
+             (find (apply health (list body-part)) (apply description-list (list body-part)) :key #'car :test (lambda (health trigger-point) (> trigger-point health)))))
     (append (mapcar (lambda (damage-type)
                       (describe (string-function damage-type :suffix "-health") (string-function damage-type :prefix "base-" :suffix "-descriptions")))
                     '("slice" "blunt" "pierce")))))
