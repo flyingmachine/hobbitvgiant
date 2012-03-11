@@ -93,5 +93,7 @@
   (let ((body (make-instance 'humanoid-body)))
     (with-accessors ((body-parts body-parts)) body
       (setf (blunt-damage (cdr (assoc 'head body-parts))) 20)
-      (setf (pierce-damage (cdr (assoc 'neck body-parts))) 40))
+      (setf (slice-damage (cdr (assoc 'head body-parts))) 20)
+      (setf (pierce-damage (cdr (assoc 'neck body-parts))) 40)
+      (setf (slice-damage (cdr (assoc 'left-upper-arm body-parts))) 90))
     (look body)))
