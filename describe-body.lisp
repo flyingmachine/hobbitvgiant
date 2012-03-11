@@ -2,7 +2,7 @@
   ((base-slice-descriptions
     :allocation :class
     :reader base-slice-descriptions
-    :initform '((0  . nil)
+    :initform '(
                 (10 . "lightly scratched")
                 (20 . "scratched")
                 (50 . "cut")
@@ -14,7 +14,7 @@
    (base-blunt-descriptions
     :allocation :class
     :reader base-blunt-descriptions
-    :initform '((0  . nil)
+    :initform '(
                 (10 . "slightly discolored")
                 (60 . "discolored")
                 (70 . "bruised")
@@ -24,7 +24,7 @@
    (base-pierce-descriptions
     :allocation :class
     :reader base-pierce-descriptions
-    :initform '((0  . nil)
+    :initform '(
                 (10 . "lightly pierced")
                 (60 . "scratched")
                 (70 . "cut")
@@ -42,7 +42,11 @@
    (pierce-damage
     :initarg :pierce-damage
     :initform 0
-    :accessor pierce-damage)))
+    :accessor pierce-damage)
+
+   (name
+    :initarg :name
+    :reader name)))
 
 (defclass body ()
   ((body-parts)))
@@ -50,27 +54,37 @@
 (defclass humanoid-body (body)
   ((body-parts
     :initform (mapcar (lambda (body-part)
-                        (cons (car body-part) (make-instance 'body-part)))
+                        (make-instance 'body-part :name (car body-part)))
                       (symmetrize-body-parts *asym-humanoid-body-parts*))
     :reader body-parts)))
 
-;; Does it make sense to have a generic describe method for like
+;; Does it make sense tao have a generic describe method for like
 ;; everything in the game?
 (defgeneric look (game-object))
 
 (defmethod look ((body-part body-part))
   (labels ((describe (damage description-list)
              ;; TODO refactor
-             (find (apply damage (list body-part)) (apply description-list (list body-part)) :key #'car :test (lambda (damage trigger-point) (<= damage trigger-point)))))
-    (nconc (mapcar (lambda (damage-type)
-                     (describe (func damage-type "-damage") (func "base-" damage-type "-descriptions")))
-                   '("slice" "blunt" "pierce")))))
+             (cdr (find (apply damage (list body-part))
+                        (apply description-list (list body-part))
+                        :key #'car
+                        :test (lambda (damage trigger-point) (and (not (zerop damage)) (<= damage trigger-point)))))))
+    (let ((damages (remove nil (mapcar (lambda (damage-type)
+                                         (describe (func damage-type "-damage") (func "base-" damage-type "-descriptions")))
+                                       '("slice" "blunt" "pierce")))))
+      (look-compile (name body-part) damages))))
+
+(defun look-compile (name descriptions)
+  (let ((length (length descriptions)))
+    (cond ((= length 1) (mkstr "Its " name " is " (car descriptions) "."))
+          ((= length 2) (mkstr "Its " name " is " (car descriptions) " and " (cadr descriptions) "."))
+          ((= length 3) (mkstr "Its " name " is " (car descriptions) ". It is " (cadr descriptions) " and " (caddr descriptions) ".")))))
 
 (defmethod look ((body body))
   )
 
 (defun test-body-part ()
-  (let ((body-part (make-instance 'body-part)))
+  (let ((body-part (make-instance 'body-part :name 'head)))
     (setf (blunt-damage body-part) 20)
     (setf (slice-damage body-part) 75)
     (look body-part)))
