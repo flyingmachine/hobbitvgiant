@@ -1,0 +1,30 @@
+* body parts / combat*** Head 3
+**** left eye 1
+**** right eye 1 
+**** left ear 1
+**** right ear 1
+**** mouth 1
+**** nose 1
+*** Neck 2
+**** jugular 1
+**** wind pipe 1
+*** torso
+**** chest 10
+**** abdomen 6
+**** back 10
+*** arm
+**** shoulder 3
+**** upper arm 3
+**** forearm 3
+**** left hand 2
+*** groin
+**** junk 3
+**** ass  4
+*** leg
+**** femoral artery 2
+**** knee 2
+**** thigh 4
+**** shin/calf 4
+**** achilles 1
+*** left foot 2
+* describe generic function

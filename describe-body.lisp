@@ -2,42 +2,47 @@
   ((base-slice-descriptions
     :allocation :class
     :reader base-slice-descriptions
-    :initform '((90 . (lightly scratched))
-                (80 . (scratched))
-                (70 . (cut))
-                (60 . (deeply cut))
-                (50 . (marred by multiple cuts))
-                (20 . (covered in deep glistening gashes))
-                (10 . (a ragged mess of flesh with deep lacerations crisscrossing it leaving bone exposed))))
+    :initform '((0  . nil)
+                (10 . "lightly scratched")
+                (20 . "scratched")
+                (50 . "cut")
+                (60 . "deeply cut")
+                (70 . "marred by multiple cuts")
+                (80 . "covered in deep, glistening gashes")
+                (90 . "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone")))
+ 
    (base-blunt-descriptions
     :allocation :class
     :reader base-blunt-descriptions
-    :initform '((90 . (slightly discolored))
-                (80 . (discolored))
-                (70 . (bruised))
-                (60 . (a sick purple-green-yellow color from deep bruising))
-                (10 . (deformed its underlying structure pulverized))))
+    :initform '((0  . nil)
+                (10 . "slightly discolored")
+                (60 . "discolored")
+                (70 . "bruised")
+                (80 . "a sick purple-green-yellow color from deep bruising")
+                (90 . "deformed, its underlying structure pulverized")))
+   
    (base-pierce-descriptions
     :allocation :class
     :reader base-pierce-descriptions
-    :initform '((90 . (lightly pierced))
-                (80 . (scratched))
-                (70 . (cut))
-                (60 . (oozing from multiple punctures))
-                (10 . (brutally lacerated unrecognizable))))
+    :initform '((0  . nil)
+                (10 . "lightly pierced")
+                (60 . "scratched")
+                (70 . "cut")
+                (80 . "oozing from multiple punctures")
+                (90 . "brutally lacerated, unrecognizable")))
 
-   (slice-health
-    :initarg :slice-health
-    :initform 100
-    :reader slice-health)
-   (blunt-health
-    :initarg :blunt-health
-    :initform 100
-    :reader blunt-health)
-   (pierce-health
-    :initarg :pierce-health
-    :initform 100
-    :reader pierce-health)))
+   (slice-damage
+    :initarg :slice-damage
+    :initform 0
+    :accessor slice-damage)
+   (blunt-damage
+    :initarg :blunt-damage
+    :initform 0
+    :accessor blunt-damage)
+   (pierce-damage
+    :initarg :pierce-damage
+    :initform 0
+    :accessor pierce-damage)))
 
 (defclass body ()
   ((body-parts)))
@@ -45,20 +50,27 @@
 (defclass humanoid-body (body)
   ((body-parts
     :initform (mapcar (lambda (body-part)
-                        (cons (car body-part) (make-instance body-part))) (symmetrize-body-parts *asym-body-parts*)))))
+                        (cons (car body-part) (make-instance 'body-part)))
+                      (symmetrize-body-parts *asym-humanoid-body-parts*))
+    :reader body-parts)))
 
-(defun string-function (base &key prefix suffix)
-  (symbol-function (intern (string-upcase (concatenate 'string prefix base suffix)))))
+;; Does it make sense to have a generic describe method for like
+;; everything in the game?
+(defgeneric look (game-object))
 
-(defgeneric describe-body-part (body-part))
+(defmethod look ((body-part body-part))
+  (labels ((describe (damage description-list)
+             ;; TODO refactor
+             (find (apply damage (list body-part)) (apply description-list (list body-part)) :key #'car :test (lambda (damage trigger-point) (<= damage trigger-point)))))
+    (nconc (mapcar (lambda (damage-type)
+                     (describe (func damage-type "-damage") (func "base-" damage-type "-descriptions")))
+                   '("slice" "blunt" "pierce")))))
 
-(defmethod describe-body-part (body-part)
-  (labels ((describe (health description-list)
-             (find (apply health (list body-part)) (apply description-list (list body-part)) :key #'car :test (lambda (health trigger-point) (> trigger-point health)))))
-    (append (mapcar (lambda (damage-type)
-                      (describe (string-function damage-type :suffix "-health") (string-function damage-type :prefix "base-" :suffix "-descriptions")))
-                    '("slice" "blunt" "pierce")))))
-
-(defgeneric describe-body (body)
+(defmethod look ((body body))
   )
 
+(defun test-body-part ()
+  (let ((body-part (make-instance 'body-part)))
+    (setf (blunt-damage body-part) 20)
+    (setf (slice-damage body-part) 75)
+    (look body-part)))

@@ -1,4 +1,4 @@
-(defparameter *asym-body-parts*
+(defparameter *asym-humanoid-body-parts*
   '((head . 3)
     (left-eye . 1)
     (left-ear . 1)
