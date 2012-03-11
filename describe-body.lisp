@@ -54,7 +54,7 @@
 (defclass humanoid-body (body)
   ((body-parts
     :initform (mapcar (lambda (body-part)
-                        (make-instance 'body-part :name (car body-part)))
+                        (cons (car body-part) (make-instance 'body-part :name (car body-part))))
                       (symmetrize-body-parts *asym-humanoid-body-parts*))
     :reader body-parts)))
 
@@ -81,10 +81,17 @@
           ((= length 3) (mkstr "Its " name " is " (car descriptions) ". It is " (cadr descriptions) " and " (caddr descriptions) ".")))))
 
 (defmethod look ((body body))
-  )
+  (remove nil (mapcar (lambda (body-part) (look (cdr body-part))) (body-parts body))))
 
 (defun test-body-part ()
   (let ((body-part (make-instance 'body-part :name 'head)))
     (setf (blunt-damage body-part) 20)
     (setf (slice-damage body-part) 75)
     (look body-part)))
+
+(defun test-body ()
+  (let ((body (make-instance 'humanoid-body)))
+    (with-accessors ((body-parts body-parts)) body
+      (setf (blunt-damage (cdr (assoc 'head body-parts))) 20)
+      (setf (pierce-damage (cdr (assoc 'neck body-parts))) 40))
+    (look body)))
