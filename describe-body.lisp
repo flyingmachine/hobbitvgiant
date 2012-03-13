@@ -1,9 +1,9 @@
 (defclass body-part ()
   ((base-slice-descriptions
+    :documentation "description slots are used for textual descriptions of the corresponding level of damage"
     :allocation :class
     :reader base-slice-descriptions
-    :initform '(
-                (10 . "lightly scratched")
+    :initform '((10 . "lightly scratched")
                 (20 . "scratched")
                 (50 . "cut")
                 (60 . "deeply cut")
@@ -14,8 +14,7 @@
    (base-blunt-descriptions
     :allocation :class
     :reader base-blunt-descriptions
-    :initform '(
-                (10 . "slightly discolored")
+    :initform '((10 . "slightly discolored")
                 (60 . "discolored")
                 (70 . "bruised")
                 (80 . "a sick purple-green-yellow color from deep bruising")
@@ -24,14 +23,14 @@
    (base-pierce-descriptions
     :allocation :class
     :reader base-pierce-descriptions
-    :initform '(
-                (10 . "lightly pierced")
+    :initform '((10 . "lightly pierced")
                 (60 . "scratched")
                 (70 . "cut")
                 (80 . "oozing from multiple punctures")
                 (90 . "brutally lacerated, unrecognizable")))
 
    (slice-damage
+    :documentation "how many points of damage this body part has received"
     :initarg :slice-damage
     :initform 0
     :accessor slice-damage)
@@ -43,13 +42,13 @@
     :initarg :pierce-damage
     :initform 0
     :accessor pierce-damage)
-
    (name
     :initarg :name
     :reader name)))
 
 (defclass body ()
-  ((body-parts)))
+  ((body-parts
+    :documentation "An alist of body parts, (name . body-part-instance)")))
 
 (defclass humanoid-body (body)
   ((body-parts
@@ -60,7 +59,8 @@
 
 ;; Does it make sense tao have a generic describe method for like
 ;; everything in the game?
-(defgeneric look (game-object))
+(defgeneric look (game-object)
+  (:documentation "Look methods correspond to the look command and will print a description of an object"))
 
 (defmethod look ((body-part body-part))
   (labels ((describe (damage description-list)
@@ -74,6 +74,8 @@
                                        '("slice" "blunt" "pierce")))))
       (look-compile (name body-part) damages))))
 
+;; So far this is only used by the body-part look method. Wonder if it
+;; should just be part of that method?
 (defun look-compile (name descriptions)
   (let ((length (length descriptions)))
     (cond ((= length 1) (mkstr "Its " name " is " (car descriptions) "."))
