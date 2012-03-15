@@ -9,7 +9,13 @@
 
 (defmacro defattrclasses (attr-names &body class-options)
   `(loop for attr-name in ',attr-names do
-        (eval (append (list'defattrclass attr-name) '(,@class-options)))))
+        (eval (append (list 'defattrclass attr-name) '(,@class-options)))))
+
+
+(defmacro defattrclasses (attr-names &body class-options)
+  `(progn
+     ,@(loop for attr-name in attr-names collect
+            `(defattrclass ,attr-name ,@class-options))))
 
 (defclass weapon ()
   ((base-slice-damage
