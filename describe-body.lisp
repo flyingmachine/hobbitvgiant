@@ -24,24 +24,24 @@
     :allocation :class
     :reader base-pierce-descriptions
     :initform '((10 . "lightly pierced")
-                (60 . "scratched")
-                (70 . "cut")
+                (20 . "pierced")
+                (30 . "punctured")
                 (80 . "oozing from multiple punctures")
                 (90 . "brutally lacerated, unrecognizable")))
 
-   (slice-damage
+   (slice-damage-received
     :documentation "how many points of damage this body part has received"
-    :initarg :slice-damage
+    :initarg :slice-damage-received
     :initform 0
-    :accessor slice-damage)
-   (blunt-damage
-    :initarg :blunt-damage
+    :accessor slice-damage-received)
+   (blunt-damage-received
+    :initarg :blunt-damage-received
     :initform 0
-    :accessor blunt-damage)
-   (pierce-damage
-    :initarg :pierce-damage
+    :accessor blunt-damage-received)
+   (pierce-damage-received
+    :initarg :pierce-damage-received
     :initform 0
-    :accessor pierce-damage)
+    :accessor pierce-damage-received)
    (name
     :initarg :name
     :reader name)))
@@ -70,7 +70,7 @@
                         :key #'car
                         :test (lambda (damage trigger-point) (and (not (zerop damage)) (<= damage trigger-point)))))))
     (let ((damages (remove nil (mapcar (lambda (damage-type)
-                                         (describe (func damage-type "-damage") (func "base-" damage-type "-descriptions")))
+                                         (describe (func damage-type "-damage-received") (func "base-" damage-type "-descriptions")))
                                        '("slice" "blunt" "pierce")))))
       (look-compile (name body-part) damages))))
 
@@ -87,15 +87,15 @@
 
 (defun test-body-part ()
   (let ((body-part (make-instance 'body-part :name 'head)))
-    (setf (blunt-damage body-part) 20)
-    (setf (slice-damage body-part) 75)
+    (setf (blunt-damage-received body-part) 20)
+    (setf (slice-damage-received body-part) 75)
     (look body-part)))
 
 (defun test-body ()
   (let ((body (make-instance 'humanoid-body)))
     (with-accessors ((body-parts body-parts)) body
-      (setf (blunt-damage (cdr (assoc 'head body-parts))) 20)
-      (setf (slice-damage (cdr (assoc 'head body-parts))) 20)
-      (setf (pierce-damage (cdr (assoc 'neck body-parts))) 40)
-      (setf (slice-damage (cdr (assoc 'left-upper-arm body-parts))) 90))
+      (setf (blunt-damage-received (cdr (assoc 'head body-parts))) 20)
+      (setf (slice-damage-received (cdr (assoc 'head body-parts))) 20)
+      (setf (pierce-damage-received (cdr (assoc 'neck body-parts))) 40)
+      (setf (slice-damage-received (cdr (assoc 'left-upper-arm body-parts))) 90))
     (look body)))

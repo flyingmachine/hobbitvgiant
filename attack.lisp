@@ -2,15 +2,17 @@
 ;; kinds of damage? Will need to handle this for armor and toughness
 ;; as well.
 
-(defun base-damage (damage-type)
-  (list (symb 'base- damage-type '-damage)
-        :reader (symb 'base- damage-type '-damage)
-        :initform 0
-        :initarg (symb : 'base- damage-type '-damage)))
+(defmacro defattrclass (attr-name &body class-options)
+  `(defclass ,(symb attr-name '-attr) ()
+     ((,attr-name
+       ,@class-options))))
+
+(defmacro defattrclasses (attr-names &body class-options)
+  `(loop for attr-name in ',attr-names do
+        (eval (append (list'defattrclass attr-name) '(,@class-options)))))
 
 (defclass weapon ()
   ((base-slice-damage
-    :documentation "Base slice damage dealt by weapon"
     :reader base-slice-damage
     :initform 0
     :initarg :base-slice-damage)
@@ -60,9 +62,9 @@
 
 (defmethod receive-attack (attack body)
   (with-accessors ((body-parts body-parts)) body
-    (incf (slice-damage (cdr (assoc 'head body-parts))) (slice-damage-dealt attack))
-    (incf (blunt-damage (cdr (assoc 'head body-parts))) (blunt-damage-dealt attack))
-    (incf (pierce-damage (cdr (assoc 'head body-parts))) (pierce-damage-dealt attack))))
+    (incf (slice-damage-received (cdr (assoc 'head body-parts))) (slice-damage-dealt attack))
+    (incf (blunt-damage-received (cdr (assoc 'head body-parts))) (blunt-damage-dealt attack))
+    (incf (pierce-damage-received (cdr (assoc 'head body-parts))) (pierce-damage-dealt attack))))
 
 (setq giant (make-instance 'humanoid-body))
 (setq dagger (make-instance 'dagger))
