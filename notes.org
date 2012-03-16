@@ -4,3 +4,6 @@ E.g. body part class has base descriptions for pierce. How to specify
 (90 . "gelatinous mess") for eyes?
 
 * describe generic function
+* soul binding
+** you have lived many lives
+** when dead, your soul can be re-bound within a certain time frame
