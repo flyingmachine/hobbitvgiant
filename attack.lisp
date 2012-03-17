@@ -3,19 +3,20 @@
 ;; as well.
 
 (defmacro defattrclass (attr-name &body class-options)
+  "This is meant to help solve the problem of having many similarly named classes,
+  like 'base-slice-damage' and 'base-blunt-damage'"
   `(defclass ,(symb attr-name '-attr) ()
      ((,attr-name
+       :reader ,attr-name
+       :initarg ,attr-name
        ,@class-options))))
 
 (defmacro defattrclasses (attr-names &body class-options)
-  `(loop for attr-name in ',attr-names do
-        (eval (append (list 'defattrclass attr-name) '(,@class-options)))))
-
-
-(defmacro defattrclasses (attr-names &body class-options)
-  `(progn
+  `(values
      ,@(loop for attr-name in attr-names collect
             `(defattrclass ,attr-name ,@class-options))))
+
+
 
 (defclass weapon ()
   ((base-slice-damage

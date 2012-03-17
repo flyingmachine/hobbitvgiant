@@ -1,4 +1,5 @@
 (load 'utilities)
+(load 'settings)
 (load 'target)
 (load 'describe-body)
 (load 'attack)
