@@ -1,6 +1,4 @@
-(defclass attack ()
-  (damage)
-  (target))
+
 
 (defmethod generate-damage (weapon)
   (labels ((damage (max)
@@ -30,4 +28,4 @@
 
 
 (defun attack (attacker recipient target weapon)
-  (let thing-hit))
+  (let ((thing-hit) )))

@@ -10,7 +10,8 @@
 
    (custom-damage-descriptions
     :allocation :class
-    :reader custom-damage-descriptions)
+    :reader custom-damage-descriptions
+    :initform '())
    
    (base-damage-descriptions
     :allocation :class
@@ -34,11 +35,29 @@
                                             20 "pierced"
                                             30 "punctured"
                                             80 "oozing from multiple punctures"
-                                            90 "covered in brutal craters, unrecognizable")))))
+                                            90 "covered in brutal craters, unrecognizable")
+
+                             :fire '()
+                             :ice  '()))))
 
 (defgeneric damage-descriptions (item)
-  :documentation "Given an item, ")
+  (:documentation "Given an item, return a list of descriptions"))
 
+;; The damage description data structure assumes that we'll never want
+;; to completely remove a base data structure
+;;
+;; Gist is that you create an alist by appending base descriptions to
+;; custom ones. Then sort the keys and use the sorted keys to find
+;; which description to use. Then use assoc to get that description
+(defmethod damage-descriptions ((body-part body-part))
+  (let ((descriptions (append (custom-damage-descriptions body-part) (base-damage-descriptions body-part)))
+        (body-part-damage (damage-received body-part)))
+    (mapcar (lambda (damage-type)
+              (let ((descriptions-for-type (damage-for descriptions damage-type)))
+                (car (assoc (find (damage-for body-part-damage damage-type)
+                                  (sort (mapcar (lambda (desc) (car desc)) descriptions-for-type) #'>) ;; sort keys descending
+                                  :test (lambda (damage-received trigger-point) (>= damage-received trigger-point))) descriptions-for-type))))
+            *damage-types*)))
 
 (defclass body ()
   ((body-parts

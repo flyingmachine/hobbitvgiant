@@ -1,3 +1,5 @@
+(defparameter *damage-types* '(slice blunt pierce fire ice))
+
 (defclass damage ()
   ((slice
     :initarg :slice
@@ -19,6 +21,9 @@
     :initarg :ice
     :accessor ice-damage-for
     :initform 0)))
+
+(defun damage-for (damage damage-type)
+  (funcall (func damage-type '-damage-for) damage))
 
 (defmacro set-damage (damage damage-type val)
   `(setf (,(symb-up damage-type '-damage-for) ,damage) ,val))
