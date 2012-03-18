@@ -26,9 +26,9 @@
                                            90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
 
                              :blunt (plist 10 "slightly discolored"
-                                           60 "discolored"
-                                           70 "bruised"
-                                           80 "a sick purple-green-yellow color from deep bruising"
+                                           20 "discolored"
+                                           40 "bruised"
+                                           70 "a sick purple-green-yellow color from deep bruising"
                                            90 "deformed, its underlying structure pulverized")
 
                              :pierce (plist 10 "lightly pierced"
@@ -40,8 +40,7 @@
                              :fire '()
                              :ice  '()))))
 
-(defgeneric damage-descriptions (item)
-  (:documentation "Given an item, return a list of descriptions"))
+
 
 ;; The damage description data structure assumes that we'll never want
 ;; to completely remove a base data structure
@@ -49,15 +48,18 @@
 ;; Gist is that you create an alist by appending base descriptions to
 ;; custom ones. Then sort the keys and use the sorted keys to find
 ;; which description to use. Then use assoc to get that description
-(defmethod damage-descriptions ((body-part body-part))
+;;
+;; If I do end up having item damage descriptions, will probably use
+;; the same code
+(defmethod describe-damage ((body-part body-part))
   (let ((descriptions (append (custom-damage-descriptions body-part) (base-damage-descriptions body-part)))
         (body-part-damage (damage-received body-part)))
-    (mapcar (lambda (damage-type)
-              (let ((descriptions-for-type (damage-for descriptions damage-type)))
-                (car (assoc (find (damage-for body-part-damage damage-type)
-                                  (sort (mapcar (lambda (desc) (car desc)) descriptions-for-type) #'>) ;; sort keys descending
-                                  :test (lambda (damage-received trigger-point) (>= damage-received trigger-point))) descriptions-for-type))))
-            *damage-types*)))
+    (remove nil (mapcar (lambda (damage-type)
+                          (let ((descriptions-for-type (damage-for descriptions damage-type)))
+                            (second (assoc (find (damage-for body-part-damage damage-type)
+                                                 (sort (mapcar (lambda (desc) (car desc)) descriptions-for-type) #'>) ;; sort keys descending
+                                                 :test (lambda (damage-received trigger-point) (>= damage-received trigger-point))) descriptions-for-type))))
+                        *damage-types*))))
 
 (defclass body ()
   ((body-parts
@@ -72,43 +74,35 @@
 
 ;; Does it make sense tao have a generic describe method for like
 ;; everything in the game?
-(defgeneric look (game-object)
-  (:documentation "Look methods correspond to the look command and will print a description of an object"))
+(defgeneric describe-game-object (game-object)
+  (:documentation "Compiles the final description for an object"))
 
-(defmethod look ((body-part body-part))
-  (labels ((describe (damage description-list)
-             ;; TODO refactor
-             (cdr (find (apply damage (list body-part))
-                        (apply description-list (list body-part))
-                        :key #'car
-                        :test (lambda (damage trigger-point) (and (not (zerop damage)) (<= damage trigger-point)))))))
-    (let ((damages (remove nil (mapcar (lambda (damage-type)
-                                         (describe (func damage-type "-damage-received") (func "base-" damage-type "-descriptions")))
-                                       '("slice" "blunt" "pierce")))))
-      (look-compile (name body-part) damages))))
+(defmethod describe-game-object ((body-part body-part))
+  (let ((descriptions (describe-damage body-part)))
+    (when descriptions
+      (let ((preamble (mkstr "Its " (name body-part) " is")))
+        (if (second descriptions)
+            (append (list preamble) descriptions)
+            (list (mkstr preamble " " (first descriptions))))))))
 
-;; So far this is only used by the body-part look method. Wonder if it
-;; should just be part of that method?
-(defun look-compile (name descriptions)
-  (let ((length (length descriptions)))
-    (cond ((= length 1) (mkstr "Its " name " is " (car descriptions) "."))
-          ((= length 2) (mkstr "Its " name " is " (car descriptions) " and " (cadr descriptions) "."))
-          ((= length 3) (mkstr "Its " name " is " (car descriptions) ". It is " (cadr descriptions) " and " (caddr descriptions) ".")))))
 
-(defmethod look ((body body))
-  (remove nil (mapcar (lambda (body-part) (look (cdr body-part))) (body-parts body))))
+(defmethod describe-game-object ((body body))
+  (remove nil (mapcar (lambda (body-part) (describe-game-object (cdr body-part))) (body-parts body))))
+
+
+(defun body-part (body part-name)
+  (cdr (assoc part-name (body-parts body))))
 
 (defun test-body-part ()
   (let ((body-part (make-instance 'body-part :name 'head)))
-    (setf (blunt-damage-received body-part) 20)
-    (setf (slice-damage-received body-part) 75)
-    (look body-part)))
+    (set-damage (damage-received body-part) slice 20)
+    (set-damage (damage-received body-part) blunt 75)
+    (describe-game-object body-part)))
 
 (defun test-body ()
   (let ((body (make-instance 'humanoid-body)))
-    (with-accessors ((body-parts body-parts)) body
-      (setf (blunt-damage-received (cdr (assoc 'head body-parts))) 20)
-      (setf (slice-damage-received (cdr (assoc 'head body-parts))) 20)
-      (setf (pierce-damage-received (cdr (assoc 'neck body-parts))) 40)
-      (setf (slice-damage-received (cdr (assoc 'left-upper-arm body-parts))) 90))
-    (look body)))
+    (set-damage (damage-received (body-part body 'neck)) slice 20)
+    (set-damage (damage-received (body-part body 'left-eye)) pierce 90)
+    (set-damage (damage-received (body-part body 'left-eye)) blunt 90)
+    ;; (set-damage (damage-received (body-part body 'right-leg)) blunt 30)
+    (describe-game-object body)))
