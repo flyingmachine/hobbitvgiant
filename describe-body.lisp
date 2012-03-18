@@ -104,5 +104,5 @@
     (set-damage (damage-received (body-part body 'neck)) slice 20)
     (set-damage (damage-received (body-part body 'left-eye)) pierce 90)
     (set-damage (damage-received (body-part body 'left-eye)) blunt 90)
-    ;; (set-damage (damage-received (body-part body 'right-leg)) blunt 30)
+    (set-damage (damage-received (body-part body 'right-thigh)) blunt 30)
     (describe-game-object body)))
