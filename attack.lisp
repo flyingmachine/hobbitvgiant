@@ -1,53 +1,6 @@
-;; TODO is there any way to clean up the repetition of the different
-;; kinds of damage? Will need to handle this for armor and toughness
-;; as well.
-
-(defmacro defattrclass (attr-name &body class-options)
-  "This is meant to help solve the problem of having many similarly named classes,
-  like 'base-slice-damage' and 'base-blunt-damage'"
-  `(defclass ,(symb attr-name '-attr) ()
-     ((,attr-name
-       :reader ,attr-name
-       :initarg ,attr-name
-       ,@class-options))))
-
-(defmacro defattrclasses (attr-names &body class-options)
-  `(values
-     ,@(loop for attr-name in attr-names collect
-            `(defattrclass ,attr-name ,@class-options))))
-
-
-
-(defclass weapon ()
-  ((base-slice-damage
-    :reader base-slice-damage
-    :initform 0
-    :initarg :base-slice-damage)
-   (base-blunt-damage
-    :reader base-blunt-damage
-    :initform 0
-    :initarg :base-blunt-damage)
-   (base-pierce-damage
-    :reader base-pierce-damage
-    :initform 0
-    :initarg :base-pierce-damage)))
-
-(defclass dagger (weapon)
-  ((base-slice-damage
-    :initform 3)
-   (base-pierce-damage
-    :initform 6)))
-
 (defclass attack ()
-  ((slice-damage-dealt
-    :initarg :slice-damage-dealt
-    :reader slice-damage-dealt)
-   (blunt-damage-dealt
-    :initarg :blunt-damage-dealt
-    :reader blunt-damage-dealt)
-   (pierce-damage-dealth
-    :initarg :pierce-damage-dealt
-    :reader pierce-damage-dealt)))
+  (damage)
+  (target))
 
 (defmethod generate-damage (weapon)
   (labels ((damage (max)
@@ -74,10 +27,7 @@
     (incf (pierce-damage-received (cdr (assoc 'head body-parts))) (pierce-damage-dealt attack))))
 
 (setq giant (make-instance 'humanoid-body))
-(setq dagger (make-instance 'dagger))
-
-(defun attack (weapon target-body)
-  (receive-attack (make-attack weapon) target-body)
-  (look target-body))
 
 
+(defun attack (attacker recipient target weapon)
+  (let thing-hit))

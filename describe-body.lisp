@@ -1,50 +1,44 @@
 (defclass body-part ()
-  ((base-slice-descriptions
-    :documentation "description slots are used for textual descriptions of the corresponding level of damage"
-    :allocation :class
-    :reader base-slice-descriptions
-    :initform '((10 . "lightly scratched")
-                (20 . "scratched")
-                (50 . "cut")
-                (60 . "deeply cut")
-                (70 . "marred by multiple cuts")
-                (80 . "covered in deep, glistening gashes")
-                (90 . "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone")))
- 
-   (base-blunt-descriptions
-    :allocation :class
-    :reader base-blunt-descriptions
-    :initform '((10 . "slightly discolored")
-                (60 . "discolored")
-                (70 . "bruised")
-                (80 . "a sick purple-green-yellow color from deep bruising")
-                (90 . "deformed, its underlying structure pulverized")))
+  ((damage-received
+    :initarg :damage-received
+    :initform (make-instance 'damage)
+    :accessor damage-received)
    
-   (base-pierce-descriptions
-    :allocation :class
-    :reader base-pierce-descriptions
-    :initform '((10 . "lightly pierced")
-                (20 . "pierced")
-                (30 . "punctured")
-                (80 . "oozing from multiple punctures")
-                (90 . "brutally lacerated, unrecognizable")))
-
-   (slice-damage-received
-    :documentation "how many points of damage this body part has received"
-    :initarg :slice-damage-received
-    :initform 0
-    :accessor slice-damage-received)
-   (blunt-damage-received
-    :initarg :blunt-damage-received
-    :initform 0
-    :accessor blunt-damage-received)
-   (pierce-damage-received
-    :initarg :pierce-damage-received
-    :initform 0
-    :accessor pierce-damage-received)
    (name
     :initarg :name
-    :reader name)))
+    :reader name)
+
+   (custom-damage-descriptions
+    :allocation :class
+    :reader custom-damage-descriptions)
+   
+   (base-damage-descriptions
+    :allocation :class
+    :reader base-damage-descriptions
+    :initform (make-instance 'damage
+                             :slice (plist 10 "lightly scratched"
+                                           20 "scratched"
+                                           50 "cut"
+                                           60 "deeply cut"
+                                           70 "marred by multiple cuts"
+                                           80 "covered in deep, glistening gashes"
+                                           90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
+
+                             :blunt (plist 10 "slightly discolored"
+                                           60 "discolored"
+                                           70 "bruised"
+                                           80 "a sick purple-green-yellow color from deep bruising"
+                                           90 "deformed, its underlying structure pulverized")
+
+                             :pierce (plist 10 "lightly pierced"
+                                            20 "pierced"
+                                            30 "punctured"
+                                            80 "oozing from multiple punctures"
+                                            90 "covered in brutal craters, unrecognizable")))))
+
+(defgeneric damage-descriptions (item)
+  :documentation "Given an item, ")
+
 
 (defclass body ()
   ((body-parts
