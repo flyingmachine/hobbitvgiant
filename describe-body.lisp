@@ -75,20 +75,30 @@
 ;; Does it make sense tao have a generic describe method for like
 ;; everything in the game?
 (defgeneric describe-game-object (game-object)
-  (:documentation "Compiles the final description for an object"))
+  (:documentation "Compiles the final description for an object. Format:
+[[set one first line [indented [indented more] indented]] [set two first line]]"))
 
 (defmethod describe-game-object ((body-part body-part))
   (let ((descriptions (describe-damage body-part)))
     (when descriptions
-      (let ((preamble (mkstr "Its " (name body-part) " is")))
-        (if (second descriptions)
-            (append (list preamble) descriptions)
-            (list (mkstr preamble " " (first descriptions))))))))
+      (list (let ((preamble (mkstr "Its " (name body-part) " is")))
+              (if (second descriptions)
+                  (list preamble descriptions)
+                  (list (mkstr preamble " " (first descriptions)))))))))
 
 
 (defmethod describe-game-object ((body body))
-  (remove nil (mapcar (lambda (body-part) (describe-game-object (cdr body-part))) (body-parts body))))
+  (remove nil (mapcan (lambda (body-part) (describe-game-object (cdr body-part))) (body-parts body))))
 
+
+(defun look (game-object)
+  (let ((description (describe-game-object game-object)))
+    (labels ((formatted-output (l level)
+               (mapc (lambda (r)
+                       (if (typep r 'list)
+                           (formatted-output r (1+ level))
+                           (format t "~v{ ~}~a~%" level '(foo) r))) l)))
+      (mapc (lambda (d) (formatted-output d 0)) description))))
 
 (defun body-part (body part-name)
   (cdr (assoc part-name (body-parts body))))
@@ -105,4 +115,5 @@
     (set-damage (damage-received (body-part body 'left-eye)) pierce 90)
     (set-damage (damage-received (body-part body 'left-eye)) blunt 90)
     (set-damage (damage-received (body-part body 'right-thigh)) blunt 30)
-    (describe-game-object body)))
+    (describe-game-object body)
+    (look body)))
