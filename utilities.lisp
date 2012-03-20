@@ -21,5 +21,17 @@
                    (nreverse (cons source acc))))))
     (if source (rec source nil) nil)))
 
+;; rename to alist?
 (defun plist (&rest properties)
   (group properties 2))
+
+(defun alist-values (alist)
+  (mapcar #'cdr alist))
+
+(defun alist-keys (alist)
+  (mapcar #'car alist))
+
+(defun merge-alists (key-source value-source)
+  (mapcar (lambda (key)
+            (cons key (cdr (assoc key value-source))))
+          (alist-keys key-source)))

@@ -38,3 +38,6 @@
                                                   "A mace! It's blunty!"
                                                   '(:blunt 10
                                                     :pierce 2)))))
+
+(defun select-weapon (weapon)
+  (car (assoc weapon *weapons*)))

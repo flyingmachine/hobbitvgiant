@@ -103,17 +103,4 @@
 (defun body-part (body part-name)
   (cdr (assoc part-name (body-parts body))))
 
-(defun test-body-part ()
-  (let ((body-part (make-instance 'body-part :name 'head)))
-    (set-damage (damage-received body-part) slice 20)
-    (set-damage (damage-received body-part) blunt 75)
-    (describe-game-object body-part)))
 
-(defun test-body ()
-  (let ((body (make-instance 'humanoid-body)))
-    (set-damage (damage-received (body-part body 'neck)) slice 20)
-    (set-damage (damage-received (body-part body 'left-eye)) pierce 90)
-    (set-damage (damage-received (body-part body 'left-eye)) blunt 90)
-    (set-damage (damage-received (body-part body 'right-thigh)) blunt 30)
-    (describe-game-object body)
-    (look body)))
