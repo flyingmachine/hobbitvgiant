@@ -10,11 +10,22 @@
     :accessor description)))
 
 ;; eventually add support for enchantments
-;; would like damage-sets to be a plist
+;; would like damage-sets to be a alist
+;;
+;; Each weapon has weapon stats, which can contain multiple damage
+;; sets. For example, a throwing knife could have melee and thrown
+;; damage sets.
 (defclass weapon-stats ()
   ((damage-sets
     :initarg :damage-sets
-    :reader  damage-sets)))
+    :reader  damage-sets)
+   (active-damage-set
+    :accessor active-damage-set
+    :initform 0)))
+
+(defmethod active-damage-set ((weapon item))
+  (with-accessors ((weapon-stats weapon-stats)) weapon
+    (elt (damage-sets weapon-stats) (active-damage-set weapon-stats))))
 
 (defmethod initialize-instance :after ((weapon-stats weapon-stats) &key)
   (setf (slot-value weapon-stats 'damage-sets)
@@ -40,4 +51,4 @@
                                                     :pierce 2)))))
 
 (defun select-weapon (weapon)
-  (car (assoc weapon *weapons*)))
+  (assocdr weapon *weapons*))

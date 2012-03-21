@@ -31,6 +31,12 @@
 (defun alist-keys (alist)
   (mapcar #'car alist))
 
+(defun assocar (key alist)
+  (car (assoc key alist)))
+
+(defun assocdr (key alist)
+  (cdr (assoc key alist)))
+
 (defun merge-alists (key-source value-source)
   (mapcar (lambda (key)
             (cons key (cdr (assoc key value-source))))

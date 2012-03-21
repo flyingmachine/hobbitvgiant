@@ -25,5 +25,14 @@
 (defun damage-for (damage damage-type)
   (funcall (func damage-type '-damage-for) damage))
 
-(defmacro set-damage (damage damage-type val)
+(defsetf damage-for (damage damage-type) (val)
+  `(setf-damage ,damage ,damage-type ,val))
+
+(defmacro setf-damage (damage damage-type val)
   `(setf (,(symb-up damage-type '-damage-for) ,damage) ,val))
+
+(defmacro incf-damage (damage damage-type val)
+  `(incf (,(symb-up damage-type '-damage-for) ,damage) ,val))
+
+(defmacro decf-damage (damage damage-type val)
+  `(decf (,(symb-up damage-type '-damage-for) ,damage) ,val))
