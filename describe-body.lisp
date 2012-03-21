@@ -1,7 +1,7 @@
 (defclass body-part ()
   ((damage-received
     :initarg :damage-received
-    :initform (make-instance 'damage)
+    :initform (make-damage 0)
     :accessor damage-received)
    
    (name
@@ -16,29 +16,29 @@
    (base-damage-descriptions
     :allocation :class
     :reader base-damage-descriptions
-    :initform (make-instance 'damage
-                             :slice (plist 10 "lightly scratched"
-                                           20 "scratched"
-                                           50 "cut"
-                                           60 "deeply cut"
-                                           70 "marred by multiple cuts"
-                                           80 "covered in deep, glistening gashes"
-                                           90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
-
-                             :blunt (plist 10 "slightly discolored"
-                                           20 "discolored"
-                                           40 "bruised"
-                                           70 "a sick purple-green-yellow color from deep bruising"
-                                           90 "deformed, its underlying structure pulverized")
-
-                             :pierce (plist 10 "lightly pierced"
-                                            20 "pierced"
-                                            30 "punctured"
-                                            80 "oozing from multiple punctures"
-                                            90 "covered in brutal craters, unrecognizable")
-
-                             :fire '()
-                             :ice  '()))))
+    :initform (make-damage nil
+               :slice (plist 10 "lightly scratched"
+                             20 "scratched"
+                             50 "cut"
+                             60 "deeply cut"
+                             70 "marred by multiple cuts"
+                             80 "covered in deep, glistening gashes"
+                             90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
+               
+               :blunt (plist 10 "slightly discolored"
+                             20 "discolored"
+                             40 "bruised"
+                             70 "a sick purple-green-yellow color from deep bruising"
+                             90 "deformed, its underlying structure pulverized")
+               
+               :pierce (plist 10 "lightly pierced"
+                              20 "pierced"
+                              30 "punctured"
+                              80 "oozing from multiple punctures"
+                              90 "covered in brutal craters, unrecognizable")
+               
+               :fire '()
+               :ice  '()))))
 
 
 

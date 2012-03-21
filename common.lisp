@@ -1,32 +1,22 @@
 (defparameter *damage-types* '(slice blunt pierce fire ice))
 
-(defclass damage ()
-  ((slice
-    :initarg :slice
-    :accessor slice-damage-for
-    :initform 0)
-   (blunt
-    :initarg :blunt
-    :accessor blunt-damage-for
-    :initform 0)
-   (pierce
-    :initarg :pierce
-    :accessor pierce-damage-for
-    :initform 0)
-   (fire
-    :initarg :fire
-    :accessor fire-damage-for
-    :initform 0)
-   (ice
-    :initarg :ice
-    :accessor ice-damage-for
-    :initform 0)))
+;; create a damage hash
+(defun make-damage (default &key slice blunt pierce fire ice)
+  (macrolet ((setter ()
+               `(progn
+                  ,@(mapcar (lambda (dtype)
+                              `(setf (gethash ',dtype d) (or ,dtype default))) *damage-types*))))
+    (let ((d (make-hash-table)))
+      (setter)
+      d)))
 
 (defun damage-for (damage damage-type)
-  (funcall (func damage-type '-damage-for) damage))
+  (gethash damage-type damage))
 
-(defsetf damage-for (damage damage-type) (val)
-  `(setf-damage ,damage ,damage-type ,val))
+(defun set-damage-for (damage damage-type val)
+  (setf (gethash damage-type damage) val))
+
+(defsetf damage-for set-damage-for)
 
 (defmacro setf-damage (damage damage-type val)
   `(setf (,(symb-up damage-type '-damage-for) ,damage) ,val))

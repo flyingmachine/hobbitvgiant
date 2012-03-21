@@ -45,5 +45,6 @@
   (let ((body-part (assocdr thing-hit (body-parts defender)))
         (weapon-damage (active-damage-set weapon)))
     (mapc (lambda (damage-type)
-            (incf-damage (damage-received body-part) damage-type (damage-for weapon-damage damage-type)))
+            (incf (damage-for (damage-received body-part) damage-type) (damage-for weapon-damage damage-type))
+            (print (describe-damage (assocdr thing-hit (body-parts defender)))))
           *damage-types*)))

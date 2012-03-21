@@ -27,10 +27,11 @@
   (with-accessors ((weapon-stats weapon-stats)) weapon
     (elt (damage-sets weapon-stats) (active-damage-set weapon-stats))))
 
+;; TODO make damage sets a hash instead of a vector
 (defmethod initialize-instance :after ((weapon-stats weapon-stats) &key)
   (setf (slot-value weapon-stats 'damage-sets)
         (apply #'vector (mapcar (lambda (damage-set)
-                                  (apply #'make-instance (append '(damage) damage-set)))
+                                  (apply #'make-damage (append '(0) damage-set)))
                                 (slot-value weapon-stats 'damage-sets)))))
 
 ;; TODO be able to specify multiple attack types, like 1h, 2h, thrown, etc
