@@ -17,22 +17,22 @@
     :allocation :class
     :reader base-damage-descriptions
     :initform (make-damage nil
-               :slice (plist 10 "lightly scratched"
-                             20 "scratched"
-                             50 "cut"
+               :slice (plist 1  "lightly scratched"
+                             10 "scratched"
+                             30 "cut"
                              60 "deeply cut"
                              70 "marred by multiple cuts"
                              80 "covered in deep, glistening gashes"
                              90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
                
-               :blunt (plist 10 "slightly discolored"
-                             20 "discolored"
+               :blunt (plist 1  "slightly discolored"
+                             10 "discolored"
                              40 "bruised"
                              70 "a sick purple-green-yellow color from deep bruising"
                              90 "deformed, its underlying structure pulverized")
                
-               :pierce (plist 10 "lightly pierced"
-                              20 "pierced"
+               :pierce (plist 1  "lightly pierced"
+                              10 "pierced"
                               30 "punctured"
                               80 "oozing from multiple punctures"
                               90 "covered in brutal craters, unrecognizable")
@@ -58,7 +58,8 @@
                           (let ((descriptions-for-type (damage-for descriptions damage-type)))
                             (second (assoc (find (damage-for body-part-damage damage-type)
                                                  (sort (mapcar (lambda (desc) (car desc)) descriptions-for-type) #'>) ;; sort keys descending
-                                                 :test (lambda (damage-received trigger-point) (>= damage-received trigger-point))) descriptions-for-type))))
+                                                 :test (lambda (damage-received trigger-point)
+                                                         (>= damage-received trigger-point))) descriptions-for-type))))
                         *damage-types*))))
 
 (defclass body ()

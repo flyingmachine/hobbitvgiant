@@ -4,3 +4,4 @@
 (load 'describe-body)
 (load 'items)
 (load 'combat)
+(load 'tests)
