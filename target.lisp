@@ -40,7 +40,7 @@
 (defun body-part-sum (body-parts)
   (reduce #'+ body-parts :key #'cdr))
 
-(defun attack (body-parts)
+(defun select-target (body-parts)
   (nth (position (random (body-part-sum body-parts)) body-parts :key #'cdr :test (target-hit-function)) body-parts))
 
 ;; wonder if it's good style to include "function" when returning function
