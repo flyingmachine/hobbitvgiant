@@ -15,6 +15,8 @@
 ;; Each weapon has weapon stats, which can contain multiple damage
 ;; sets. For example, a throwing knife could have melee and thrown
 ;; damage sets.
+;;
+;; TODO does balance change when switching 1h/2h?
 (defclass weapon-stats ()
   ((damage-sets
     :initarg :damage-sets
