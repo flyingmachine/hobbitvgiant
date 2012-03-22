@@ -21,7 +21,7 @@
     :reader  damage-sets)
    (active-damage-set
     :accessor active-damage-set
-    :initform 'melee)))
+    :initform '1h)))
 
 (defmethod active-damage-set ((weapon item))
   (with-accessors ((weapon-stats weapon-stats)) weapon
@@ -47,14 +47,22 @@
 
 (defparameter *weapons* `((dagger . ,(make-weapon "dagger"
                                                   "A dagger! It's pointy!"
-                                                  'melee
+                                                  '1h
                                                   '(:slice 2
                                                     :pierce 6)))
                           (mace   . ,(make-weapon "mace"
                                                   "A mace! It's blunty!"
-                                                  'melee
+                                                  '1h
                                                   '(:blunt 10
-                                                    :pierce 2)))))
+                                                    :pierce 2)))
+                          (mace   . ,(make-weapon "bastard sword"
+                                                  "A bastard sword! It's a bastard!"
+                                                  '2h
+                                                  '(:blunt 3
+                                                    :slice 10)
+                                                  '1h
+                                                  '(:blunt 2
+                                                    :slice 7)))))
 
 (defun select-weapon (weapon)
   (assocdr weapon *weapons*))

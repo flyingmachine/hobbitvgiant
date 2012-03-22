@@ -2,6 +2,7 @@
 ;; Damage
 ;; ---
 (defparameter *damage-types* '(slice blunt pierce fire ice))
+(defparameter *damage-set-types* '(1h 2h thrown))
 
 ;; create a damage hash
 (defun make-damage (default &key slice blunt pierce fire ice)
