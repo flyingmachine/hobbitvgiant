@@ -1,3 +1,6 @@
+;; ---
+;; Damage
+;; ---
 (defparameter *damage-types* '(slice blunt pierce fire ice))
 
 ;; create a damage hash
@@ -26,3 +29,8 @@
 
 (defmacro decf-damage (damage damage-type val)
   `(decf (,(symb-up damage-type '-damage-for) ,damage) ,val))
+
+;; ---
+;; Status Effects
+;; ---
+(defparameter *status-effects* '(poison stun blind))

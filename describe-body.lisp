@@ -17,25 +17,25 @@
     :allocation :class
     :reader base-damage-descriptions
     :initform (make-damage nil
-               :slice (plist 1  "lightly scratched"
-                             10 "scratched"
-                             30 "cut"
-                             60 "deeply cut"
-                             70 "marred by multiple cuts"
-                             80 "covered in deep, glistening gashes"
-                             90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
+               :slice (pairsr 1  "lightly scratched"
+                              10 "scratched"
+                              30 "cut"
+                              60 "deeply cut"
+                              70 "marred by multiple cuts"
+                              80 "covered in deep, glistening gashes"
+                              90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
                
-               :blunt (plist 1  "slightly discolored"
-                             10 "discolored"
-                             40 "bruised"
-                             70 "a sick purple-green-yellow color from deep bruising"
-                             90 "deformed, its underlying structure pulverized")
+               :blunt (pairsr 1  "slightly discolored"
+                              10 "discolored"
+                              40 "bruised"
+                              70 "a sick purple-green-yellow color from deep bruising"
+                              90 "deformed, its underlying structure pulverized")
                
-               :pierce (plist 1  "lightly pierced"
-                              10 "pierced"
-                              30 "punctured"
-                              80 "oozing from multiple punctures"
-                              90 "covered in brutal craters, unrecognizable")
+               :pierce (pairsr 1  "lightly pierced"
+                               10 "pierced"
+                               30 "punctured"
+                               80 "oozing from multiple punctures"
+                               90 "covered in brutal craters, unrecognizable")
                
                :fire '()
                :ice  '()))))
@@ -56,7 +56,7 @@
         (body-part-damage (damage-received body-part)))
     (remove nil (mapcar (lambda (damage-type)
                           (let ((descriptions-for-type (damage-for descriptions damage-type)))
-                            (second (assoc (find (damage-for body-part-damage damage-type)
+                            (cdr (assoc (find (damage-for body-part-damage damage-type)
                                                  (sort (mapcar (lambda (desc) (car desc)) descriptions-for-type) #'>) ;; sort keys descending
                                                  :test (lambda (damage-received trigger-point)
                                                          (>= damage-received trigger-point))) descriptions-for-type))))
@@ -83,7 +83,7 @@
   (let ((descriptions (describe-damage body-part)))
     (when descriptions
       (list (let ((preamble (mkstr "Its " (name body-part) " is")))
-              (if (second descriptions)
+              (if (cdr descriptions)
                   (list preamble descriptions)
                   (list (mkstr preamble " " (first descriptions)))))))))
 

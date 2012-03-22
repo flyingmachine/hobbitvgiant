@@ -21,9 +21,32 @@
                    (nreverse (cons source acc))))))
     (if source (rec source nil) nil)))
 
-;; rename to alist?
-(defun plist (&rest properties)
-  (group properties 2))
+
+;; from land of lisp
+(defmacro let1 (var val &body body)
+  `(let ((,var ,val))
+     ,@body))
+
+(defmacro split (val yes no)
+  (let1 g (gensym)
+        `(let1 ,g ,val
+               (if ,g
+                   (let ((head (car ,g))
+                         (tail (cdr ,g)))
+                     ,yes)
+                 ,no))))
+
+(defun pairs (lst)
+  (labels ((f (lst acc)
+              (split lst
+                     (if tail
+                         (f (cdr tail) (cons (cons head (car tail)) acc))
+                       (reverse acc))
+                     (reverse acc))))
+    (f lst nil)))
+
+(defun pairsr (&rest lst)
+  (pairs lst))
 
 (defun alist-values (alist)
   (mapcar #'cdr alist))

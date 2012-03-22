@@ -7,3 +7,25 @@ E.g. body part class has base descriptions for pierce. How to specify
 * soul binding
 ** you have lived many lives
 ** when dead, your soul can be re-bound within a certain time frame
+* verbs
+* rooms
+* items
+** containers
+*** max size in size units
+*** very long items?
+** weight 
+** value
+** wearable
+** armor
+*** protection against damage types
+** magic
+*** spells
+**** poison - like a DOT spell that can be dispelled with herbs
+*** costs, replenishment
+** abilities
+*** same as magic?
+** status effects
+*** blindness
+*** slowness
+*** status penalties
+* storing data
