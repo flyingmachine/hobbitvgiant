@@ -26,6 +26,8 @@
     :initform '1h)))
 
 (defmethod active-damage-set ((weapon item))
+  (:documentation "Weapons can have multiple damage sets. This retrieves the 'active' damage set,
+e.g. if you're using a bastard sword and choosing the 2h damage set.")
   (with-accessors ((weapon-stats weapon-stats)) weapon
     (gethash (active-damage-set weapon-stats) (damage-sets weapon-stats))))
 
@@ -38,8 +40,6 @@
           (pairs (slot-value weapon-stats 'damage-sets)))
     (setf (slot-value weapon-stats 'damage-sets) dsets)))
 
-
-;; TODO be able to specify multiple attack types, like 1h, 2h, thrown, etc
 (defun make-weapon (name description &rest damage-options)
   (make-instance 'item
                  :name name

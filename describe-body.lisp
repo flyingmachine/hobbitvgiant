@@ -59,6 +59,9 @@
 ;;
 ;; If I do end up having item damage descriptions, will probably use
 ;; the same code
+;;
+;; Returns a list of all descriptions that apply based on each kind of
+;; damage done
 (defmethod describe-damage ((body-part body-part))
   (let ((descriptions (append (custom-damage-descriptions body-part) (base-damage-descriptions body-part)))
         (body-part-damage (damage-received body-part)))
