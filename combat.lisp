@@ -1,12 +1,10 @@
 (defun attack (attacker defender weapon &optional target)
   (let ((thing-hit (attempt-hit attacker defender target weapon)))
     (if thing-hit
-        ;; TODO have more sophisticated damage calc
         (apply-damage attacker defender weapon thing-hit)
         (format t "You missed! How sad.~%"))))
 
 (defun attempt-hit (attacker defender weapon &optional target)
-  ;; using merge-alists seems kinda silly here
   (let* ((body-part-weights (symmetrize-body-parts *asym-humanoid-body-parts*))
          (miss (= (random 10) 0)))
     (unless miss
@@ -25,4 +23,4 @@
     (0 0)
     (1 1)
     (2 (1+ (random 2)))
-    (otherwise (+ (1+ (floor (/ base-damage 2))) (random (ceiling (/ base-damage 2))))))))
+    (otherwise (+ (1+ (floor (/ base-damage 2))) (random (ceiling (/ base-damage 2)))))))

@@ -19,3 +19,7 @@
         (weapon   (select-weapon 'dagger)))
     (attack attacker defender weapon)
     (look defender)))
+
+(setq giant (make-instance 'humanoid-body))
+(setq hobbit (make-instance 'humanoid-body))
+(setq dagger (select-weapon 'dagger))

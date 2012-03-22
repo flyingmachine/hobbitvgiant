@@ -16,9 +16,10 @@ E.g. body part class has base descriptions for pierce. How to specify
 ** weight 
 ** value
 ** wearable
-** weapons
-*** randomize damage
-*** 
+** weapons / combat
+*** enchantments
+*** account for height
+*** target a body part
 ** armor
 *** protection against damage types
 ** magic

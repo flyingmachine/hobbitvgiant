@@ -22,16 +22,7 @@
 
 (defsetf damage-for set-damage-for)
 
-(defmacro setf-damage (damage damage-type val)
-  `(setf (,(symb-up damage-type '-damage-for) ,damage) ,val))
-
-(defmacro incf-damage (damage damage-type val)
-  `(incf (,(symb-up damage-type '-damage-for) ,damage) ,val))
-
-(defmacro decf-damage (damage damage-type val)
-  `(decf (,(symb-up damage-type '-damage-for) ,damage) ,val))
-
 ;; ---
 ;; Status Effects
 ;; ---
-(defparameter *status-effects* '(poison stun blind))
+(defparameter *status-effects* '(poison stun blind bound paralyzed))

@@ -31,13 +31,21 @@
                               70 "a sick purple-green-yellow color from deep bruising"
                               90 "deformed, its underlying structure pulverized")
                
-               :pierce (pairsr 1  "lightly pierced"
+               :pierce (pairsr 1  "pricked"
                                10 "pierced"
                                30 "punctured"
                                80 "oozing from multiple punctures"
                                90 "covered in brutal craters, unrecognizable")
                
-               :fire '()
+               :fire (pairsr 1  "singed"
+                             10 "a light pink-red from heat"
+                             20 "burnt"
+                             40 "red and burnt"
+                             50 "badly burnt"
+                             60 "very badly burnt"
+                             70 "bubbling"
+                             80 "covered in boils and turning black in spots"
+                             90 "completely charred, with bits of flesh flaking off")
                :ice  '()))))
 
 

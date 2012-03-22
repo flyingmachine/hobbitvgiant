@@ -64,7 +64,3 @@
   (mapcar (lambda (key)
             (cons key (cdr (assoc key value-source))))
           (alist-keys key-source)))
-
-;; for debugging
-(defun print-hash-entry (key value)
-    (format t "The value associated with the key ~S is ~S~%" key value))
