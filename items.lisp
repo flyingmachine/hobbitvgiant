@@ -82,24 +82,24 @@ e.g. if you're using a bastard sword and choosing the 2h damage set."))
 
 (make-weapon :name "dagger"
              :description "A dagger! It's pointy!"
-             :weight 3
-             :item-length 2
+             :weight 450
+             :item-length 50
              :damage-options '(1h (:slice 2 :pierce 6)))
 (make-weapon :name "mace"
              :description "A mace! It's blunty!"
-             :weight 6
-             :item-length 4
+             :weight 1000
+             :item-length 85
              :damage-options '(1h (:blunt 10 :pierce 2)))
 (make-weapon :name "bastard sword"
              :description "A bastard sword! It's a bastard!"
-             :weight 10
-             :item-length 7
+             :weight 2270
+             :item-length 100
              :damage-options '(2h (:blunt 3 :slice 10)
                                1h (:blunt 2 :slice 7)))
 (make-weapon :name "flaming skull lantern"
              :description "A lantern containing the flaming skulll of a dead mage."
-             :weight 4
-             :item-length 4
+             :weight 1100
+             :item-length 85
              :damage-options '(1h (:blunt 5 :fire  10)))
 
 (defun select-item (item)
