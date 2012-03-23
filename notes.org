@@ -5,6 +5,7 @@
 ** you have lived many lives
 ** when dead, your soul can be re-bound within a certain time frame
 * verbs
+** very help verb system, like allhailzirakh
 * rooms
 * items
 ** containers

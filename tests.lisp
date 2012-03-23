@@ -16,10 +16,10 @@
 (defun test-attack ()
   (let ((attacker (make-instance 'humanoid-body))
         (defender (make-instance 'humanoid-body))
-        (weapon   (select-weapon 'dagger)))
+        (weapon   (select-item "dagger")))
     (attack attacker defender weapon)
     (look defender)))
 
 (setq giant (make-instance 'humanoid-body))
 (setq hobbit (make-instance 'humanoid-body))
-(setq dagger (select-weapon 'dagger))
+(setq dagger (select-item "dagger"))
