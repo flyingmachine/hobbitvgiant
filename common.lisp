@@ -1,7 +1,7 @@
 ;; ---
 ;; Damage
 ;; ---
-(defparameter *damage-types* '(slice blunt pierce fire ice))
+(defparameter *damage-types* '(slice blunt pierce fire ice poison))
 (defparameter *damage-set-types* '(1h 2h thrown))
 
 ;; create a damage hash

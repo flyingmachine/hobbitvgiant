@@ -1,55 +1,3 @@
-(defclass body-part ()
-  ((damage-received
-    :initarg :damage-received
-    :initform (make-damage 0)
-    :accessor damage-received)
-   
-   (name
-    :initarg :name
-    :reader name)
-
-   (custom-damage-descriptions
-    :allocation :class
-    :reader custom-damage-descriptions
-    :initform '())
-   
-   (base-damage-descriptions
-    :allocation :class
-    :reader base-damage-descriptions
-    :initform (make-damage nil
-               :slice (pairsr 1  "lightly scratched"
-                              10 "scratched"
-                              30 "cut"
-                              60 "deeply cut"
-                              70 "marred by multiple cuts"
-                              80 "covered in deep, glistening gashes"
-                              90 "a ragged mess of flesh with deep lacerations crisscrossing it, exposing bone" )
-               
-               :blunt (pairsr 1  "slightly discolored"
-                              10 "discolored"
-                              40 "bruised"
-                              70 "a sick purple-green-yellow color from deep bruising"
-                              90 "deformed, its underlying structure pulverized")
-               
-               :pierce (pairsr 1  "pricked"
-                               10 "pierced"
-                               30 "punctured"
-                               80 "oozing from multiple punctures"
-                               90 "covered in brutal craters, unrecognizable")
-               
-               :fire (pairsr 1  "singed"
-                             10 "a light pink-red from heat"
-                             20 "burnt"
-                             40 "red and burnt"
-                             50 "badly burnt"
-                             60 "very badly burnt"
-                             70 "bubbling"
-                             80 "covered in boils and turning black in spots"
-                             90 "completely charred, with bits of flesh flaking off")
-               :ice  '()))))
-
-
-
 ;; The damage description data structure assumes that we'll never want
 ;; to completely remove a base data structure
 ;;
@@ -63,7 +11,7 @@
 ;; Returns a list of all descriptions that apply based on each kind of
 ;; damage done
 (defmethod describe-damage ((body-part body-part))
-  (let ((descriptions (append (custom-damage-descriptions body-part) (base-damage-descriptions body-part)))
+  (let ((descriptions (append (custom-damage-descriptions body-part) (damage-descriptions body-part)))
         (body-part-damage (damage-received body-part)))
     (remove nil (mapcar (lambda (damage-type)
                           (let ((descriptions-for-type (damage-for descriptions damage-type)))
@@ -72,17 +20,6 @@
                                                  :test (lambda (damage-received trigger-point)
                                                          (>= damage-received trigger-point))) descriptions-for-type))))
                         *damage-types*))))
-
-(defclass body ()
-  ((body-parts
-    :documentation "An alist of body parts, (name . body-part-instance)")))
-
-(defclass humanoid-body (body)
-  ((body-parts
-    :initform (mapcar (lambda (body-part)
-                        (cons (car body-part) (make-instance 'body-part :name (car body-part))))
-                      (symmetrize-body-parts *asym-humanoid-body-parts*))
-    :reader body-parts)))
 
 ;; Does it make sense tao have a generic describe method for like
 ;; everything in the game?
