@@ -32,6 +32,8 @@
                              90 "completely charred, with bits of flesh flaking off")
                :ice  '()))
 
+;; This isn't really prototypal in the way that javascript is
+;; prototypal because ultimately we don't "shadow" any variables
 (defclass body-part-prototype ()
   ((name
     :documentation "Name of body part, e.g. head, foot, etc"
@@ -39,7 +41,7 @@
     :reader name)
 
    (length
-    :documentation "How long, in cm the body part is. Mainly used to calc height penalties"
+    :documentation "How long, in cm, the body part is. Mainly used to calc height penalties"
     :initarg :length
     :reader  length)
 
@@ -65,7 +67,7 @@
     :accessor prototype)
 
    (effective-length
-    :documentation "Length ")
+    :documentation "Length")
 
    (damage-received
     :initarg :damage-received
@@ -73,9 +75,10 @@
     :accessor damage-received)))
 
 (defclass body ()
-  ((body-template
-    :documentation "Collection of body parts")
-
+  ((body-parts
+    :initarg :body-parts
+    :reader body-parts)
+   
    (scale
     :documentation "How large or small the body is relative to a 'standard' body"
     :initarg :scale

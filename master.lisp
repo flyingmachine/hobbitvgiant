@@ -1,6 +1,8 @@
 (load 'utilities)
 (load 'common)
 (load 'target)
+(load 'bodies)
+(load 'body-data)
 (load 'describe-body)
 (load 'items)
 (load 'combat)

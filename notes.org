@@ -1,5 +1,14 @@
 * body parts 
 ** How to store body part data?
+** What varies?
+*** descriptions vary by body part type
+eyes, head, etc are the same
+could create a bunch of descriptions? separate from the body parts?
+target size could vary from one template to the next. a googley-eyed
+monster might have a better
+*** templates
+**** humanoid
+**** quadriped
 * describe generic function
 * soul binding
 ** you have lived many lives
