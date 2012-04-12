@@ -1,6 +1,14 @@
 * body parts 
 ** How to store body part data?
+** body part data
+*** name
+*** static length
+*** base body part - what it's attached to and depends on
+*** targeting weight
+*** damage descriptions
+*** damage received
 ** What varies?
+*** "effective" length varies real time
 *** descriptions vary by body part type
 eyes, head, etc are the same
 could create a bunch of descriptions? separate from the body parts?
