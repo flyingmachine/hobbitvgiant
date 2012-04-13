@@ -1,4 +1,5 @@
-(defparameter *body-templates* make-hash-table)
+;; TODO add in a body graph to handle height
+;; each node is a body part, each edge value is length?
 (defparameter *default-damage-descriptions*
   (make-damage nil
                :slice (pairsr 1  "lightly scratched"
@@ -34,21 +35,13 @@
 
 ;; This isn't really prototypal in the way that javascript is
 ;; prototypal because ultimately we don't "shadow" any variables
+
+;; TODO separate name from identifier?
 (defclass body-part-prototype ()
   ((name
     :documentation "Name of body part, e.g. head, foot, etc"
     :initarg :name
     :reader name)
-
-   (length
-    :documentation "How long, in cm, the body part is. Mainly used to calc height penalties"
-    :initarg :length
-    :reader  length)
-
-   (base-body-part
-    :documentation "Used to calculate effective length and to determine what exists when a part is chopped off."
-    :initarg :base-body-part
-    :reader  base-body-part)
 
    (targeting-weight
     :documentation "How likely it is to hit this body part relative to other body parts"
@@ -66,8 +59,9 @@
     :initarg :prototype
     :accessor prototype)
 
-   (effective-length
-    :documentation "Length")
+   (name
+    :initarg :name
+    :reader  name)
 
    (damage-received
     :initarg :damage-received
