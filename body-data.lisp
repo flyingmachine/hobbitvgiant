@@ -28,31 +28,29 @@
 (make-body-part-prototype 'achilles        :targeting-weight 1)
 (make-body-part-prototype 'foot            :targeting-weight 2)
 
-
-
 (defun make-body-template (name &rest prototype-names)
   (setf (gethash name *body-templates*) prototype-names))
 
 (make-body-template 'humanoid
                     '(eye . "left eye")
                     '(eye . "right eye")
-                    'head
-                    'neck
-                    'jugular
-                    'wind-pipe
+                    '(head)
+                    '(neck)
+                    '(jugular)
+                    '(wind-pipe)
                     '(shoulder . "left shoulder")
                     '(shoulder . "right shoulder")
                     '(upper-arm . "left upper arm")
                     '(upper-arm . "right upper arm")
                     '(forearm . "left forearm")
                     '(forearm . "right forearm")
-                    'chest
-                    'abdomen
-                    'back
+                    '(chest)
+                    '(abdomen)
+                    '(back)
                     '(kidney . "left kidney")
                     '(kidney . "right kidney")
-                    'junk
-                    'ass            
+                    '(junk)
+                    '(ass)            
                     '(femoral-artery . "left femoral artery")
                     '(femoral-artery . "right femoral artery")
                     '(thigh . "left thight")
@@ -63,3 +61,15 @@
                     '(achilles . "right achilles")
                     '(foot . "left foot")
                     '(foot . "right foot"))
+
+(defun make-body (template-name &optional (scale 1))
+  (make-instance 'body
+                 :body-parts (compose-parts-from-template template-name)
+                 :scale scale))
+
+(defun compose-parts-from-template (template-name)
+  (mapcar (lambda (prototype-name)
+            (if (cdr prototype-name)
+                (make-body-part (car prototype-name) (cdr prototype-name))
+                (make-body-part (car prototype-name) (car prototype-name))))
+          (gethash template-name *body-templates*)))

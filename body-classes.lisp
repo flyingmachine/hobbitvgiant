@@ -68,6 +68,11 @@
     :initform (make-damage 0)
     :accessor damage-received)))
 
+(defun make-body-part (prototype name)
+  (make-instance 'body-part
+                 :prototype prototype
+                 :name name))
+
 (defclass body ()
   ((body-parts
     :initarg :body-parts
