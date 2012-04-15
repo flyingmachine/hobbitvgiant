@@ -11,7 +11,7 @@
 ;; Returns a list of all descriptions that apply based on each kind of
 ;; damage done
 (defmethod describe-damage ((body-part body-part))
-  (let ((descriptions (append (custom-damage-descriptions body-part) (damage-descriptions body-part)))
+  (let ((descriptions (damage-descriptions body-part))
         (body-part-damage (damage-received body-part)))
     (remove nil (mapcar (lambda (damage-type)
                           (let ((descriptions-for-type (damage-for descriptions damage-type)))
@@ -37,7 +37,7 @@
 
 
 (defmethod describe-game-object ((body body))
-  (remove nil (mapcan (lambda (body-part) (describe-game-object (cdr body-part))) (body-parts body))))
+  (remove nil (mapcan (lambda (body-part) (describe-game-object body-part)) (body-parts body))))
 
 
 (defun look (game-object)
@@ -48,8 +48,3 @@
                            (formatted-output r (1+ level))
                            (format t "~v{ ~}~a~%" level '(foo) r))) l)))
       (mapc (lambda (d) (formatted-output d 0)) description))))
-
-(defun body-part (body part-name)
-  (cdr (assoc part-name (body-parts body))))
-
-

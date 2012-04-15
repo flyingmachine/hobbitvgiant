@@ -35,15 +35,8 @@
 
 ;; This isn't really prototypal in the way that javascript is
 ;; prototypal because ultimately we don't "shadow" any variables
-
-;; TODO separate name from identifier?
 (defclass body-part-prototype ()
-  ((name
-    :documentation "Name of body part, e.g. head, foot, etc"
-    :initarg :name
-    :reader name)
-
-   (targeting-weight
+  ((targeting-weight
     :documentation "How likely it is to hit this body part relative to other body parts"
     :initarg :targeting-weight
     :reader targeting-weight)
@@ -54,6 +47,14 @@
     :reader damage-descriptions
     :initform *default-damage-descriptions*)))
 
+(defun make-body-part-prototype (name &key targeting-weight (damage-descriptions *default-damage-descriptions*))
+  (setf (gethash name *body-part-prototypes*)
+        (make-instance 'body-part-prototype
+                       :targeting-weight targeting-weight
+                       :damage-descriptions damage-descriptions)))
+
+
+;; body part
 (defclass body-part ()
   ((prototype
     :initarg :prototype
@@ -73,6 +74,20 @@
                  :prototype prototype
                  :name name))
 
+(defgeneric modify-damage (game-object damage-type modification)
+  (:documentation "Adds 'modification' to the damage type of a damage object associated with a game object"))
+
+(defmethod modify-damage ((body-part body-part) damage-type modification)
+  (incf (damage-for (damage-received body-part) damage-type) modification))
+
+;; TODO create 'proxy' macro?
+(defmethod damage-descriptions ((body-part body-part))
+  (damage-descriptions (prototype body-part)))
+
+(defmethod targeting-weight ((body-part body-part))
+  (targeting-weight (prototype body-part)))
+
+;; bodies
 (defclass body ()
   ((body-parts
     :initarg :body-parts
@@ -83,3 +98,24 @@
     :initarg :scale
     :initform 1
     :reader scale)))
+
+(defun make-body (template-name &optional (scale 1))
+  (make-instance 'body
+                 :body-parts (compose-parts-from-template template-name)
+                 :scale scale))
+
+(defun compose-parts-from-template (template-name)
+  (mapcar (lambda (prototype-pair)
+            (let ((prototype (gethash (car prototype-pair) *body-part-prototypes*)))
+              (if (cdr prototype-pair)
+                  (make-body-part prototype (cdr prototype-pair))
+                  (make-body-part prototype (string-downcase (mkstr (car prototype-pair)))))))
+          (gethash template-name *body-templates*)))
+
+(defun body-part (body part-name)
+  (find part-name (body-parts body) :key #'name :test #'equal))
+
+(defun body-part-targeting-weights (body)
+  (mapcar (lambda (body-part)
+            (cons body-part (targeting-weight (prototype (body-part)))))
+          (body-parts body)))

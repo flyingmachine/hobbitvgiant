@@ -1,12 +1,6 @@
-;; TODO
-(defparameter *body-part-prototypes* make-hash-table)
-(defparameter *body-templates* make-hash-table)
-(defun make-body-part-prototype (name &key length base-body-part targeting-weight damage-descriptions)
-  (setf (gethash name *body-part-prototypes*)
-        (make-instance 'body-part-prototype
-                       :name name
-                       :targeting-weight targeting-weight
-                       :damage-descriptions damage-descriptions)))
+;; TODO read this data from CSV files
+(defparameter *body-part-prototypes* (make-hash-table))
+(defparameter *body-templates* (make-hash-table))
 
 (make-body-part-prototype 'eye             :targeting-weight 1)
 (make-body-part-prototype 'head            :targeting-weight 3)
@@ -53,23 +47,11 @@
                     '(ass)            
                     '(femoral-artery . "left femoral artery")
                     '(femoral-artery . "right femoral artery")
-                    '(thigh . "left thight")
-                    '(thigh . "right thight")
+                    '(thigh . "left thigh")
+                    '(thigh . "right thigh")
                     '(lower-leg . "left lower leg")
                     '(lower-leg . "right lower leg")
                     '(achilles . "left achilles")
                     '(achilles . "right achilles")
                     '(foot . "left foot")
                     '(foot . "right foot"))
-
-(defun make-body (template-name &optional (scale 1))
-  (make-instance 'body
-                 :body-parts (compose-parts-from-template template-name)
-                 :scale scale))
-
-(defun compose-parts-from-template (template-name)
-  (mapcar (lambda (prototype-name)
-            (if (cdr prototype-name)
-                (make-body-part (car prototype-name) (cdr prototype-name))
-                (make-body-part (car prototype-name) (car prototype-name))))
-          (gethash template-name *body-templates*)))

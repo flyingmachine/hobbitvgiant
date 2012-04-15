@@ -1,7 +1,7 @@
 (load 'utilities)
 (load 'common)
 (load 'target)
-(load 'bodies)
+(load 'body-classes)
 (load 'body-data)
 (load 'describe-body)
 (load 'items)

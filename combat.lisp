@@ -4,17 +4,18 @@
         (apply-damage attacker defender weapon thing-hit)
         (format t "You missed! How sad.~%"))))
 
+;; Target is a specific body part
 (defun attempt-hit (attacker defender weapon &optional target)
-  (let* ((body-part-weights (symmetrize-body-parts *asym-humanoid-body-parts*))
-         (miss (= (random 10) 0)))
+  (let ((miss (= (random 10) 0)))
     (unless miss
-      (car (select-target body-part-weights)))))
+      (select-target (body-parts defender)))))
 
-(defun apply-damage (attacker defender weapon thing-hit)
-  (let ((body-part (assocdr thing-hit (body-parts defender)))
-        (weapon-damage (active-damage-set weapon)))
+(defun apply-damage (attacker defender weapon body-part)
+  (let ((weapon-damage (active-damage-set weapon)))
     (mapc (lambda (damage-type)
-            (incf (damage-for (damage-received body-part) damage-type) (random-damage (damage-for weapon-damage damage-type))))
+            (modify-damage body-part
+                           damage-type
+                           (random-damage (damage-for weapon-damage damage-type))))
           *damage-types*)))
 
 ;; will probably end up making this more general
@@ -24,3 +25,19 @@
     (1 1)
     (2 (1+ (random 2)))
     (otherwise (+ (1+ (floor (/ base-damage 2))) (random (ceiling (/ base-damage 2)))))))
+
+;;---
+;; Targeting
+;;---
+(defun body-part-sum (body-parts)
+  (reduce #'+ body-parts :key #'targeting-weight))
+
+(defun select-target (body-parts)
+  (nth (position (random (body-part-sum body-parts)) body-parts :key #'targeting-weight :test (target-hit-function)) body-parts))
+
+;; wonder if it's good style to include "function" when returning function
+(defun target-hit-function ()
+  (let ((current-position 0))
+    (lambda (target increment)
+      (incf current-position increment)
+      (> current-position target))))
