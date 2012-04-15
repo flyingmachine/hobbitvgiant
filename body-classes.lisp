@@ -104,12 +104,12 @@
 (defmethod modify-damage ((body-part body-part) damage-type modification)
   (incf (damage-for (damage-received body-part) damage-type) modification))
 
-;; TODO create 'proxy' macro?
-(defmethod damage-descriptions ((body-part body-part))
-  (damage-descriptions (prototype body-part)))
+(defmacro defproxy (proxy-name proxied-name method-name)
+  `(defmethod ,method-name ((,proxy-name ,proxy-name))
+     (,method-name (,proxied-name ,proxy-name))))
 
-(defmethod targeting-weight ((body-part body-part))
-  (targeting-weight (prototype body-part)))
+(defproxy body-part prototype damage-descriptions)
+(defproxy body-part prototype targeting-weight)
 
 ;; ---
 ;; bodies
