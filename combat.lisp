@@ -29,11 +29,11 @@
 ;;---
 ;; Targeting
 ;;---
-(defun body-part-sum (body-parts)
+(defun body-part-targeting-weight-sum (body-parts)
   (reduce #'+ body-parts :key #'targeting-weight))
 
 (defun select-target (body-parts)
-  (nth (position (random (body-part-sum body-parts)) body-parts :key #'targeting-weight :test (target-hit-function)) body-parts))
+  (nth (position (random (body-part-targeting-weight-sum body-parts)) body-parts :key #'targeting-weight :test (target-hit-function)) body-parts))
 
 ;; wonder if it's good style to include "function" when returning function
 (defun target-hit-function ()

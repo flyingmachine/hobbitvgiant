@@ -1,3 +1,22 @@
+;; Bodies
+;; ======
+;; 
+;; Each body is composed of body parts
+;;
+;; Each body part has a prototype
+;; 
+;; The prototype is a global object with invariant data, like
+;; targeting weight and damage descriptions. For example, all eyeballs
+;; should have the same descriptions when they've sustained the same
+;; degree of damage.
+;;
+;; The body part object contains instance-specific data, like how much
+;; damage is actually sustained
+;;
+;; Each time a body is created, new body parts are composed with their
+;; prototypes using body templates. A human would have a different
+;; template from a spider.
+
 ;; TODO add in a body graph to handle height
 ;; each node is a body part, each edge value is length?
 (defparameter *default-damage-descriptions*
@@ -33,6 +52,10 @@
                              90 "completely charred, with bits of flesh flaking off")
                :ice  '()))
 
+;;---
+;; body part prototypes
+;;---
+
 ;; This isn't really prototypal in the way that javascript is
 ;; prototypal because ultimately we don't "shadow" any variables
 (defclass body-part-prototype ()
@@ -53,8 +76,9 @@
                        :targeting-weight targeting-weight
                        :damage-descriptions damage-descriptions)))
 
-
-;; body part
+;; ---
+;; body parts
+;; ---
 (defclass body-part ()
   ((prototype
     :initarg :prototype
@@ -87,7 +111,9 @@
 (defmethod targeting-weight ((body-part body-part))
   (targeting-weight (prototype body-part)))
 
+;; ---
 ;; bodies
+;; ---
 (defclass body ()
   ((body-parts
     :initarg :body-parts
