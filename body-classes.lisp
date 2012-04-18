@@ -111,12 +111,27 @@
 (defproxy body-part prototype damage-descriptions)
 (defproxy body-part prototype targeting-weight)
 
+(defclass body-layer ()
+  ((body-parts
+    :documentation "The body parts for this layer"
+    :initarg :contents
+    :reader contents)
+
+   (height
+    :initarg :height
+    :reader  height)
+
+   (base
+    :documentation "Layer it sits on top of"
+    :initarg :base
+    :reader  base)))
+
 ;; ---
 ;; bodies
 ;; ---
 (defclass body ()
-  ((body-parts
-    :initarg :body-parts
+  ((body-layers
+    :initarg :body-layers
     :reader body-parts)
    
    (scale
@@ -125,11 +140,16 @@
     :initform 1
     :reader scale)))
 
+(defmethod body-parts ((body body))
+  (mapcan #'body-parts (body-layers body)))
+
 (defun make-body (template-name &optional (scale 1))
   (make-instance 'body
-                 :body-parts (compose-parts-from-template template-name)
+                 :body-layers (compose-parts-from-template template-name)
                  :scale scale))
 
+;; TODO comopose layers from template
+;; TODO compose parts from layers
 (defun compose-parts-from-template (template-name)
   (mapcar (lambda (prototype-pair)
             (let ((prototype (gethash (car prototype-pair) *body-part-prototypes*)))

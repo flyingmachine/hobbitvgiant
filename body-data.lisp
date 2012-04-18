@@ -22,36 +22,48 @@
 (make-body-part-prototype 'achilles        :targeting-weight 1)
 (make-body-part-prototype 'foot            :targeting-weight 2)
 
-(defun make-body-template (name &rest prototype-names)
-  (setf (gethash name *body-templates*) prototype-names))
+(defun make-body-template (name &rest layers)
+  (setf (gethash name *body-templates*) layers))
 
 (make-body-template 'humanoid
-                    '(eye . "left eye")
-                    '(eye . "right eye")
-                    '(head)
-                    '(neck)
-                    '(jugular)
-                    '(wind-pipe)
-                    '(shoulder . "left shoulder")
-                    '(shoulder . "right shoulder")
-                    '(upper-arm . "left upper arm")
-                    '(upper-arm . "right upper arm")
-                    '(forearm . "left forearm")
-                    '(forearm . "right forearm")
-                    '(chest)
-                    '(abdomen)
-                    '(back)
-                    '(kidney . "left kidney")
-                    '(kidney . "right kidney")
-                    '(junk)
-                    '(ass)            
-                    '(femoral-artery . "left femoral artery")
-                    '(femoral-artery . "right femoral artery")
-                    '(thigh . "left thigh")
-                    '(thigh . "right thigh")
-                    '(lower-leg . "left lower leg")
-                    '(lower-leg . "right lower leg")
-                    '(achilles . "left achilles")
-                    '(achilles . "right achilles")
-                    '(foot . "left foot")
-                    '(foot . "right foot"))
+                    '(head
+                      26
+                      '((eye . "left eye")
+                        (eye . "right eye")
+                        (head)
+                        (neck)
+                        (jugular)
+                        (wind-pipe)))
+                    '(torso
+                      65
+                      '((shoulder . "left shoulder")
+                        (shoulder . "right shoulder")
+                        (upper-arm . "left upper arm")
+                        (upper-arm . "right upper arm")
+                        (forearm . "left forearm")
+                        (forearm . "right forearm")
+                        (chest)
+                        (abdomen)
+                        (back)
+                        (kidney . "left kidney")
+                        (kidney . "right kidney")))
+                    '(pelvis
+                      13
+                      '((junk)
+                        (ass)))
+                    '(upper-leg
+                      52
+                      '('(femoral-artery . "left femoral artery")
+                        '(femoral-artery . "right femoral artery")
+                        '(thigh . "left thigh")
+                        '(thigh . "right thigh")))
+                    '(lower-leg
+                      39
+                      '('(lower-leg . "left lower leg")
+                        '(lower-leg . "right lower leg")
+                        '(achilles . "left achilles")
+                        '(achilles . "right achilles")))
+                    '(foot
+                      13
+                      '('(foot . "left foot")
+                        '(foot . "right foot"))))
