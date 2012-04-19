@@ -31,7 +31,7 @@
                                   (mapcar (lambda (name)
                                             (cons (car pairing) name))
                                           (cdr pairing))
-                                  (list (cons pairing (mkstr pairing)))))
+                                  (list (cons pairing (string-downcase (mkstr pairing))))))
                             prototype-pairings)))
 
 (make-body-template 'humanoid

@@ -64,3 +64,7 @@
   (mapcar (lambda (key)
             (cons key (cdr (assoc key value-source))))
           (alist-keys key-source)))
+
+(defun mappend (fn &rest lsts)
+  "maps elements in list and finally appends all resulted lists."
+  (apply #'append (apply #'mapcar fn lsts)))

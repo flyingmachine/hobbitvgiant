@@ -117,8 +117,8 @@
 (defclass body-layer ()
   ((body-parts
     :documentation "The body parts for this layer"
-    :initarg :contents
-    :reader contents)
+    :initarg :body-parts
+    :reader body-parts)
 
    (height
     :initarg :height
@@ -141,7 +141,7 @@
 (defclass body ()
   ((body-layers
     :initarg :body-layers
-    :reader body-parts)
+    :reader body-layers)
    
    (scale
     :documentation "How large or small the body is relative to a 'standard' body"
@@ -150,16 +150,17 @@
     :reader scale)))
 
 (defmethod body-parts ((body body))
-  (mapcan #'body-parts (body-layers body)))
+  (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
 
+;; FIXME why is it necessary to use copy-tree?
 (defun make-body (template-name &optional (scale 1))
   (let ((template (gethash template-name *body-templates*)))
     (make-instance 'body
-                   :body-layers (create-layers-for-body template
-                                                        (create-parts-from-prototype-pairs (mapcan #'third template) *body-part-prototypes*))
+                   :body-layers (create-body-layers template
+                                                    (create-parts-from-prototype-pairs (mapcan #'third (copy-tree template)) *body-part-prototypes*))
                    :scale scale)))
 
-(defun create-layers-from-template (template body-parts)
+(defun create-body-layers (template body-parts)
   (labels ((compose (layers acc)
              (if (consp layers)
                  (let* ((layer           (car layers))
@@ -168,7 +169,7 @@
                         (body-part-names (mapcar #'cdr (third layer))))
                    (compose
                     (cdr layers)
-                    (cons acc (cons layer-name (make-body-layer (parts-for-layer body-part-names body-parts) height (cdr (last acc)))))))
+                    (append acc (list (cons layer-name (make-body-layer (parts-for-layer body-part-names body-parts) height (cdr (last acc))))))))
                  acc)))
     (compose template nil)))
 

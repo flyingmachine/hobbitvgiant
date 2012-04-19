@@ -1,5 +1,5 @@
 (load 'utilities)
-(load 'common)
+(load 'damage)
 (load 'target)
 (load 'body-classes)
 (load 'body-data)
