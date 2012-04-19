@@ -111,6 +111,9 @@
 (defproxy body-part prototype damage-descriptions)
 (defproxy body-part prototype targeting-weight)
 
+;; ---
+;; body layers
+;; ---
 (defclass body-layer ()
   ((body-parts
     :documentation "The body parts for this layer"
@@ -125,6 +128,12 @@
     :documentation "Layer it sits on top of"
     :initarg :base
     :reader  base)))
+
+(defun make-body-layer (body-parts height base)
+  (make-instance 'body-layer
+                 :body-parts body-parts
+                 :height height
+                 :base base))
 
 ;; ---
 ;; bodies
@@ -144,24 +153,38 @@
   (mapcan #'body-parts (body-layers body)))
 
 (defun make-body (template-name &optional (scale 1))
-  (make-instance 'body
-                 :body-layers (compose-parts-from-template template-name)
-                 :scale scale))
+  (let ((template (gethash template-name *body-templates*)))
+    (make-instance 'body
+                   :body-layers (create-layers-for-body template
+                                                        (create-parts-from-prototype-pairs (mapcan #'third template) *body-part-prototypes*))
+                   :scale scale)))
 
-;; TODO comopose layers from template
-;; TODO compose parts from layers
-(defun compose-parts-from-template (template-name)
+(defun create-layers-from-template (template body-parts)
+  (labels ((compose (layers acc)
+             (if (consp layers)
+                 (let* ((layer           (car layers))
+                        (layer-name      (first layer))
+                        (height          (second layer))
+                        (body-part-names (mapcar #'cdr (third layer))))
+                   (compose
+                    (cdr layers)
+                    (cons acc (cons layer-name (make-body-layer (parts-for-layer body-part-names body-parts) height (cdr (last acc)))))))
+                 acc)))
+    (compose template nil)))
+
+(defun create-parts-from-prototype-pairs (prototype-pairs prototype-set)
   (mapcar (lambda (prototype-pair)
-            (let ((prototype (gethash (car prototype-pair) *body-part-prototypes*)))
-              (if (cdr prototype-pair)
-                  (make-body-part prototype (cdr prototype-pair))
-                  (make-body-part prototype (string-downcase (mkstr (car prototype-pair)))))))
-          (gethash template-name *body-templates*)))
+            (make-body-part (gethash (car prototype-pair) prototype-set) (cdr prototype-pair)))
+          prototype-pairs))
+
+;; TODO refactor out this test function?
+(defun parts-for-layer (body-part-names body-parts)
+  (remove-if-not (lambda (name) (position name body-part-names)) body-parts :key #'name))
 
 (defun body-part (body part-name)
   (find part-name (body-parts body) :key #'name :test #'equal))
 
 (defun body-part-targeting-weights (body)
   (mapcar (lambda (body-part)
-            (cons body-part (targeting-weight (prototype (body-part)))))
+            (cons body-part (targeting-weight (prototype body-part))))
           (body-parts body)))

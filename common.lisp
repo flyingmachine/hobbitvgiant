@@ -5,6 +5,10 @@
 (defparameter *damage-set-types* '(1h 2h thrown))
 
 ;; create a damage hash
+;;
+;; create a hash table, then set its keys using the global
+;; *damage-types* list
+;; TODO make a macro so that I don't have to list the keys?
 (defun make-damage (default &key slice blunt pierce fire ice)
   (macrolet ((setter ()
                `(progn

@@ -25,45 +25,43 @@
 (defun make-body-template (name &rest layers)
   (setf (gethash name *body-templates*) layers))
 
+(defun make-body-layer-template (name height &rest prototype-pairings)
+  (list name height (mapcan (lambda (pairing)
+                              (if (consp pairing)
+                                  (mapcar (lambda (name)
+                                            (cons (car pairing) name))
+                                          (cdr pairing))
+                                  (list (cons pairing (mkstr pairing)))))
+                            prototype-pairings)))
+
 (make-body-template 'humanoid
-                    '(head
-                      26
-                      '((eye . "left eye")
-                        (eye . "right eye")
-                        (head)
-                        (neck)
-                        (jugular)
-                        (wind-pipe)))
-                    '(torso
-                      65
-                      '((shoulder . "left shoulder")
-                        (shoulder . "right shoulder")
-                        (upper-arm . "left upper arm")
-                        (upper-arm . "right upper arm")
-                        (forearm . "left forearm")
-                        (forearm . "right forearm")
-                        (chest)
-                        (abdomen)
-                        (back)
-                        (kidney . "left kidney")
-                        (kidney . "right kidney")))
-                    '(pelvis
-                      13
-                      '((junk)
-                        (ass)))
-                    '(upper-leg
-                      52
-                      '('(femoral-artery . "left femoral artery")
-                        '(femoral-artery . "right femoral artery")
-                        '(thigh . "left thigh")
-                        '(thigh . "right thigh")))
-                    '(lower-leg
-                      39
-                      '('(lower-leg . "left lower leg")
-                        '(lower-leg . "right lower leg")
-                        '(achilles . "left achilles")
-                        '(achilles . "right achilles")))
-                    '(foot
-                      13
-                      '('(foot . "left foot")
-                        '(foot . "right foot"))))
+                    (make-body-layer-template 'foot 13
+                     '(foot "left foot" "right foot"))
+
+                    (make-body-layer-template 'lower-leg 39
+                     '(lower-leg "left lower leg" "right lower leg")
+                     '(achilles "left achilles" "right achilles"))
+
+                    (make-body-layer-template 'upper-leg 52
+                     '(femoral-artery "left femoral artery" "right femoral artery")
+                     '(thigh "left thight" "right thigh"))
+
+                    (make-body-layer-template 'pelvis 13
+                     'junk
+                     'ass)
+
+                    (make-body-layer-template 'torso 65
+                     '(shoulder "left shoulder" "right shoulder")
+                     '(upper-arm "left upper arm" "right upper arm")
+                     '(forearm "left forearm" "right forearm")
+                     'chest
+                     'abdomen
+                     'back
+                     '(kidney "left kidney" "right kidney"))
+
+                    (make-body-layer-template 'head 26
+                     '(eye "left eye" "right eye")
+                     'head
+                     'neck
+                     'jugular
+                     'wind-pipe))
