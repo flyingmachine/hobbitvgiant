@@ -50,6 +50,12 @@
     (attack attacker defender weapon)
     (look defender)))
 
-(setq giant  (make-body 'humanoid))
-(setq hobbit (make-body 'humanoid))
+(defun test-target ()
+  (let ((attacker (make-body 'humanoid))
+        (defender (make-body 'humanoid))
+        (weapon   (select-item "dagger")))
+    (body-parts-for-target-selection attacker defender weapon "head")))
+
+(setq giant  (make-body 'humanoid 2.3))
+(setq hobbit (make-body 'humanoid 0.8))
 (setq dagger (select-item "dagger"))

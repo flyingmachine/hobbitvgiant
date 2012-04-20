@@ -115,7 +115,12 @@
 ;; body layers
 ;; ---
 (defclass body-layer ()
-  ((body-parts
+  ((body
+    :documentation "The body this belongs to. Used for scale."
+    :initarg :body
+    :reader body)
+   
+   (body-parts
     :documentation "The body parts for this layer"
     :initarg :body-parts
     :reader body-parts)
@@ -141,7 +146,7 @@
 (defclass body ()
   ((body-layers
     :initarg :body-layers
-    :reader body-layers)
+    :accessor body-layers)
    
    (scale
     :documentation "How large or small the body is relative to a 'standard' body"
@@ -152,20 +157,28 @@
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
 
-;; FIXME why is it necessary to use copy-tree?
-(defun make-body (template-name &optional (scale 1))
-  (let ((template (gethash template-name *body-templates*)))
-    (make-instance 'body
-                   :body-layers (create-body-layers template
-                                                    (create-parts-from-prototype-pairs (mapcan #'third (copy-tree template)) *body-part-prototypes*))
-                   :scale scale)))
+(defmethod height ((body body))
+  (reduce #'+ (mapcar #'cdr (body-layers body)) :key #'height))
 
-(defun create-body-layers (template body-parts)
+;; FIXME why is it necessary to use copy-tree? use mappend?
+(defun make-body (template-name &optional (scale 1))
+  (let ((template (gethash template-name *body-templates*))
+        (body (make-instance 'body
+                             :scale scale)))
+    (setf (body-layers body)
+          (create-body-layers
+           body
+           template
+           (create-parts-from-prototype-pairs (mapcan #'third (copy-tree template)) *body-part-prototypes*)))
+    body))
+
+;; Associate bodyparts with layers and set base to previously created layer
+(defun create-body-layers (body template body-parts)
   (labels ((compose (layers acc)
              (if (consp layers)
                  (let* ((layer           (car layers))
                         (layer-name      (first layer))
-                        (height          (second layer))
+                        (height          (* (scale body) (second layer)))
                         (body-part-names (mapcar #'cdr (third layer))))
                    (compose
                     (cdr layers)

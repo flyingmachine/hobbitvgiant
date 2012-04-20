@@ -35,22 +35,22 @@
                             prototype-pairings)))
 
 (make-body-template 'humanoid
-                    (make-body-layer-template 'foot 13
+                    (make-body-layer-template 'foot 130
                      '(foot "left foot" "right foot"))
 
-                    (make-body-layer-template 'lower-leg 39
+                    (make-body-layer-template 'lower-leg 390
                      '(lower-leg "left lower leg" "right lower leg")
                      '(achilles "left achilles" "right achilles"))
 
-                    (make-body-layer-template 'upper-leg 52
+                    (make-body-layer-template 'upper-leg 520
                      '(femoral-artery "left femoral artery" "right femoral artery")
                      '(thigh "left thight" "right thigh"))
 
-                    (make-body-layer-template 'pelvis 13
+                    (make-body-layer-template 'pelvis 130
                      'junk
                      'ass)
 
-                    (make-body-layer-template 'torso 65
+                    (make-body-layer-template 'torso 650
                      '(shoulder "left shoulder" "right shoulder")
                      '(upper-arm "left upper arm" "right upper arm")
                      '(forearm "left forearm" "right forearm")
@@ -59,7 +59,7 @@
                      'back
                      '(kidney "left kidney" "right kidney"))
 
-                    (make-body-layer-template 'head 26
+                    (make-body-layer-template 'head 260
                      '(eye "left eye" "right eye")
                      'head
                      'neck
