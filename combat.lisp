@@ -1,14 +1,21 @@
+;; Target is the string name of a specific body part
 (defun attack (attacker defender weapon &optional target)
   (let ((thing-hit (attempt-hit attacker defender weapon target)))
     (if thing-hit
         (apply-damage attacker defender weapon thing-hit)
         (format t "You missed! How sad.~%"))))
 
-;; Target is a specific body part
 (defun attempt-hit (attacker defender weapon &optional target)
-  (let ((miss (= (random 10) 0)))
+  (let ((miss (= (random (chance-to-miss attacker defender weapon target)) 0)))
     (unless miss
       (cdr (select-target (body-parts-for-target-selection attacker defender weapon target))))))
+
+;; If attacker is twice as tall as defender, increase chance to miss
+(defun chance-to-miss (attacker defender weapon &optional target)
+  (if (> (/ (height attacker) (height defender)) 2)
+      10 ;; 1 in 10 chance of missing
+      15 ;; 1 in 15 chance of missing
+      ))
 
 (defun apply-damage (attacker defender weapon body-part)
   (let ((weapon-damage (active-damage-set weapon)))
@@ -53,7 +60,7 @@
       (build (body-layers defender) nil 0))))
 
 (defun body-part-targeting-weight-sum (body-parts-and-weights)
-  (reduce #'+ body-parts-and-weights :key #'car))
+  (coerce (reduce #'+ body-parts-and-weights :key #'car) 'float))
 
 (defun select-target (body-parts-and-weights)
   (nth (position

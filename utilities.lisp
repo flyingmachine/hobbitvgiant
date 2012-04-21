@@ -68,3 +68,9 @@
 (defun mappend (fn &rest lsts)
   "maps elements in list and finally appends all resulted lists."
   (apply #'append (apply #'mapcar fn lsts)))
+
+(defun hash-keys (hash-table)
+  (loop for key being the hash-keys of hash-table collect key))
+       
+(defun hash-values (hash-table)
+  (loop for key being the hash-values of hash-table collect key))

@@ -149,16 +149,59 @@
     :accessor body-layers)
    
    (scale
-    :documentation "How large or small the body is relative to a 'standard' body"
+    :documentation "How large or small the body is relative to a 'standard' body. Affects overall height and layer height."
     :initarg :scale
     :initform 1
-    :reader scale)))
+    :reader scale)
+
+   (strength
+    :documentation "Used to determine:
+* Carrying capacity
+* Damage dealt with strength-favoring weapons"
+    :initarg :strength
+    :initform 1
+    :accessor strength)
+
+   (stamina
+    :documentation "Used to determine:
+* Fatigue capacity / recovery
+* Health
+* Resistance to effects"
+    :initarg :stamina
+    :initform 1
+    :accessor stamina)
+
+   (agility
+    :documentation "Used to determine:
+* Swiftness of blows
+* Dodge
+* Damage dealt with agility-favoring weapons"
+    :initarg :agility
+    :initform 1
+    :accessor agility)
+
+   (dexterity
+    :documentation "Used to determine:
+* Spellcasting
+* Binding wounds
+* Lockpicking
+* Stealing
+* Manual tasks..."
+    :initarg :dexterity
+    :initform 1
+    :accessor dexterity)))
 
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
 
 (defmethod height ((body body))
   (reduce #'+ (mapcar #'cdr (body-layers body)) :key #'height))
+
+(defmethod max-health ((body body))
+  (* 20 (stamina body)))
+
+(defmethod current-health ((body body))
+  (- (max-health body) (reduce #'+ (mappend (lambda (bp) (hash-values (damage-received bp))) (body-parts body)))))
 
 ;; FIXME why is it necessary to use copy-tree? use mappend?
 (defun make-body (template-name &optional (scale 1))
