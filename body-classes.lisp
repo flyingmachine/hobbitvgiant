@@ -242,6 +242,9 @@
   (find part-name (body-parts body) :key #'name :test #'equal))
 
 (defun body-part-targeting-weights (body)
-  (mapcar (lambda (body-part)
-            (cons body-part (targeting-weight (prototype body-part))))
-          (body-parts body)))
+  (alist-by-func (body-parts body) #'targeting-weight))
+
+(defun alist-by-func (collection func)
+  (mapcar (lambda (member)
+            (cons member (funcall func member)))
+          collection))

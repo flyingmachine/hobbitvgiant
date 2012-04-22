@@ -8,7 +8,7 @@
 (defun attempt-hit (attacker defender weapon &optional target)
   (let ((miss (= (random (chance-to-miss attacker defender weapon target)) 0)))
     (unless miss
-      (cdr (select-target (body-parts-for-target-selection attacker defender weapon target))))))
+      (cdr (select-target (body-parts-for-target-selection attacker defender weapon target) #'body-part-targeting-weight-sum)))))
 
 ;; If attacker is twice as tall as defender, increase chance to miss
 (defun chance-to-miss (attacker defender weapon &optional target)
@@ -62,13 +62,13 @@
 (defun body-part-targeting-weight-sum (body-parts-and-weights)
   (coerce (reduce #'+ body-parts-and-weights :key #'car) 'float))
 
-(defun select-target (body-parts-and-weights)
+(defun select-target (weights-and-items sum-function)
   (nth (position
-        (random (body-part-targeting-weight-sum body-parts-and-weights))
-        body-parts-and-weights
+        (random (funcall sum-function weights-and-items))
+        weights-and-items
         :key #'car
         :test (target-hit-function))
-       body-parts-and-weights))
+       weights-and-items))
 
 ;; wonder if it's good style to include "function" when returning function
 (defun target-hit-function ()
