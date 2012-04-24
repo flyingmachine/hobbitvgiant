@@ -50,3 +50,41 @@ monster might have a better
 *** slowness
 *** status penalties
 * storing data
+* combat todo
+** dodge
+** block
+** grapple / unarmed
+*** punching
+*** kicking
+*** biting
+*** head butt
+*** elbow
+*** gouge
+*** throwing opponenet
+** some statuses
+*** blindness
+*** exhaustion
+**** if you use all your ap x number of times
+**** every time you have AP left over, it replenishes fatigue
+**** when you become exhausted, you can't do anything the next turn
+*** stunned
+**** activated by hitting sensitive body part
+*** hiding
+** grid
+*** distance
+** AP
+*** each move takes AP
+*** moving tiles takes more AP
+*** disengaging from melee takes more AP than moving otherwise
+*** orienting takes minimal AP
+* environment
+** terrain materials
+*** dirt
+throw dirt in eyes?
+*** grass
+*** branches
+use as weapons, use for fires
+*** water
+*** flammability
+* scenarios
+** start a fire, set entire area on fire

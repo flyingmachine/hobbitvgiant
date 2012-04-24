@@ -210,22 +210,22 @@
                              :scale scale)))
     (setf (body-layers body)
           (create-body-layers
-           body
+           (scale body)
            template
-           (create-parts-from-prototype-pairs (mapcan #'third (copy-tree template)) *body-part-prototypes*)))
+           (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*)))
     body))
 
 ;; Associate bodyparts with layers and set base to previously created layer
-(defun create-body-layers (body template body-parts)
+(defun create-body-layers (scale template body-parts)
   (labels ((compose (layers acc)
              (if (consp layers)
                  (let* ((layer           (car layers))
                         (layer-name      (first layer))
-                        (height          (* (scale body) (second layer)))
+                        (height          (* scale (second layer)))
                         (body-part-names (mapcar #'cdr (third layer))))
                    (compose
                     (cdr layers)
-                    (append acc (list (cons layer-name (make-body-layer (parts-for-layer body-part-names body-parts) height (cdr (last acc))))))))
+                    (append1 acc (cons layer-name (make-body-layer (parts-for-layer body-part-names body-parts) height (cdr (last acc)))))))
                  acc)))
     (compose template nil)))
 
@@ -235,8 +235,11 @@
           prototype-pairs))
 
 ;; TODO refactor out this test function?
+;; since layers only store body part names, we need a way of
+;; re-associating the actual layer object with the created body part object
 (defun parts-for-layer (body-part-names body-parts)
   (remove-if-not (lambda (name) (position name body-part-names)) body-parts :key #'name))
+(defun within ())
 
 (defun body-part (body part-name)
   (find part-name (body-parts body) :key #'name :test #'equal))

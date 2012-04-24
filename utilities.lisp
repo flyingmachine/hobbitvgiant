@@ -21,6 +21,7 @@
                    (nreverse (cons source acc))))))
     (if source (rec source nil) nil)))
 
+(defun append1 (lst obj) (append lst (list obj)))
 
 ;; from land of lisp
 (defmacro let1 (var val &body body)
