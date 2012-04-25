@@ -6,4 +6,5 @@
 (load 'describe-body)
 (load 'items)
 (load 'combat)
+(load 'engagement)
 (load 'tests)

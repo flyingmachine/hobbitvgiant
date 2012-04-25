@@ -1,9 +1,11 @@
 ;; Target is the string name of a specific body part
+;; returns # of AP points expended
 (defun attack (attacker defender weapon &optional target)
   (let ((thing-hit (attempt-hit attacker defender weapon target)))
     (if thing-hit
         (apply-damage attacker defender weapon thing-hit)
-        (format t "You missed! How sad.~%"))))
+        (format t "You missed! How sad.~%"))
+    3))
 
 (defun attempt-hit (attacker defender weapon &optional target)
   (let ((miss (= (random (chance-to-miss attacker defender weapon target)) 0)))
@@ -44,7 +46,7 @@
 ;;
 ;; TODO make this skill / attribute based
 (defun body-parts-for-target-selection (attacker defender weapon &optional target)
-  (let ((reach (+ (item-length weapon) (height attacker))))
+  (let1 reach (+ (item-length weapon) (height attacker))
     (labels ((build (layers acc acc-height)
                (if (null layers)
                    acc
@@ -72,7 +74,23 @@
 
 ;; wonder if it's good style to include "function" when returning function
 (defun target-hit-function ()
-  (let ((current-position 0))
+  (let1 current-position 0
     (lambda (target increment)
       (incf current-position increment)
       (> current-position target))))
+
+;;---
+;; Combat actions
+;;---
+
+;; Must return number of AP expended, including negative AP for
+;; spells, item usage that increase AP
+;; current is a body
+(defun combat-action (current engagees)
+  (if (player current)
+      (player-combat-action current engagees)
+      (mob-combat-action current engagees)))
+ 
+(defun mob-combat-action (current engagees)
+  (let1 first-target (find current engagees :test (lambda (a b) (not (eql a b))))
+    (attack current first-target (current-weapon current))))

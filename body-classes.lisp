@@ -173,7 +173,7 @@
 
    (agility
     :documentation "Used to determine:
-* Swiftness of blows
+* Swiftness of blows - AP
 * Dodge
 * Damage dealt with agility-favoring weapons"
     :initarg :agility
@@ -189,7 +189,13 @@
 * Manual tasks..."
     :initarg :dexterity
     :initform 1
-    :accessor dexterity)))
+    :accessor dexterity)
+
+   (player
+    :documentation "Used to determine whether to prompt for action during combat"
+    :initarg :player
+    :initform nil
+    :reader player)))
 
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
@@ -199,6 +205,15 @@
 
 (defmethod max-health ((body body))
   (* 20 (stamina body)))
+
+(defmethod max-ap ((body body))
+  (agility body))
+
+(defmethod dead? ((body body))
+  (<= (current-health body) 0))
+
+(defun current-weapon (body)
+  (select-item "dagger"))
 
 (defmethod current-health ((body body))
   (- (max-health body) (reduce #'+ (mappend (lambda (bp) (hash-values (damage-received bp))) (body-parts body)))))
