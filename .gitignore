@@ -1,4 +1,4 @@
-*.fas
+*.fas*
 *.lib
 *#*
 dump.rdb
