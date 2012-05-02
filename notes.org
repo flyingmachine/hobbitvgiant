@@ -88,3 +88,20 @@ use as weapons, use for fires
 *** flammability
 * scenarios
 ** start a fire, set entire area on fire
+* events
+** examples
+*** health changes
+*** ap changes
+*** room changes - people enter/exit
+*** chat
+*** movement w/in room
+*** looking
+*** doing actions - sit, stand, get something
+*** engagement - get close enough to creature, it attacks
+** example flow
+*** Rob enters room occupied by Violet
+*** Violet is engaged with a Giant
+*** Rob should get the current state of:
+**** the positions of all in the room
+**** the giant's health
+*** 
