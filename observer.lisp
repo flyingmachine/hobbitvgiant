@@ -44,7 +44,6 @@
         (let ((old (slot-value instance slot-name)))
           (multiple-value-prog1 (call-next-method)
             (dolist (observer (observers instance slot-name))
-              (format t "test")
               (funcall observer new old))))
         (call-next-method))))
 
@@ -58,6 +57,9 @@
     `(progn (when (null ,observer-hash-for-slot)
               (setf ,observer-hash-for-slot (make-hash-table)))
             (setf (gethash ,observer-name ,observer-hash-for-slot) ,fn))))
+
+(defun remove-observer (instance slot-name observer-name)
+  (remhash observer-name (gethash slot-name (slot-value instance 'observers))))
 
 (defmacro observe ((instance slot-name observer-name &optional new old) &body body)
   (let ((new (or new (gensym)))

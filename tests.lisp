@@ -79,3 +79,6 @@
 (observe (joe 'health 'room-observer new old)
   (setf (latest-event kitchen) (list joe 'health new old)))
 
+(observe (kitchen 'latest-event 'broadcaster new)
+  (room-event rob new)
+  (room-event joe new))
