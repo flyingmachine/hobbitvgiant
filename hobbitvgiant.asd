@@ -8,8 +8,8 @@
   :depends-on (#:hunchentoot)
   :components ((:file "package")
                (:file "hobbitvgiant")
-
-               (:file "utilities")
+               (:file "utilities")               
+               (:file "observer")
                (:file "damage")
                (:file "body-classes")
                (:file "body-data")

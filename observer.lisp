@@ -44,59 +44,25 @@
         (let ((old (slot-value instance slot-name)))
           (multiple-value-prog1 (call-next-method)
             (dolist (observer (observers instance slot-name))
+              (format t "test")
               (funcall observer new old))))
         (call-next-method))))
 
 (defun observers (instance slot-name)
-  (gethash slot-name (slot-value instance 'observers)))
+  (if-let (h (gethash slot-name (slot-value instance 'observers)))
+       (hash-values h)
+       (list)))
 
-(defun (setf observers) (new-value instance slot-name)
-  (setf (gethash slot-name (slot-value instance 'observers)) new-value))
+(defmacro add-observer (fn instance slot-name observer-name)
+  (let ((observer-hash-for-slot `(gethash ,slot-name (slot-value ,instance 'observers))))
+    `(progn (when (null ,observer-hash-for-slot)
+              (setf ,observer-hash-for-slot (make-hash-table)))
+            (setf (gethash ,observer-name ,observer-hash-for-slot) ,fn))))
 
-(defun add-observer (fn instance slot-name)
-  (pushnew fn (observers instance slot-name)))
-
-(defmacro observe ((instance slot-name &optional new old) &body body)
+(defmacro observe ((instance slot-name observer-name &optional new old) &body body)
   (let ((new (or new (gensym)))
         (old (or old (gensym))))
     `(add-observer (lambda (&optional ,new ,old)
                      (declare (ignorable ,new ,old))
                      ,@body)
-                   ,instance ,slot-name)))
-
-(defclass player ()
-  ((health
-    :initarg :health
-    :initform 100
-    :accessor health)
-
-   (ap
-    :initarg :ap
-    :initform 20
-    :accessor ap))
-  (:metaclass observable))
-
-(defclass game-room ()
-  ((description
-    :initarg :description
-    :initform "It's a room"
-    :accessor description)
-
-   (events
-    :initarg :events
-    :initform nil
-    :accessor events))
-  (:metaclass observable))
-
-(defclass foo ()
-  ((x :accessor foo-x :initarg :x))
-  (:metaclass observable))
-
-(defvar rob (make-instance 'player))
-(defvar joe (make-instance 'player))
-
-(defvar office  (make-instance 'game-room))
-(defvar kitchen (make-instance 'game-room))
-
-(observe (rob 'health new old)
-  (setf (events kitchen) (list rob 'health new old)))
+                   ,instance ,slot-name ,observer-name)))
