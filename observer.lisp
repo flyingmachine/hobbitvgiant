@@ -1,7 +1,69 @@
+;;; observer
+
+;;; Copyright (c) 2008 Olaf Ritter von Ruppert
+
+;;; Permission is hereby granted, free of charge, to any person
+;;; obtaining a copy of this software and associated documentation
+;;; files (the "Software"), to deal in the Software without
+;;; restriction, including without limitation the rights to use,
+;;; copy, modify, merge, publish, distribute, sublicense, and/or sell
+;;; copies of the Software, and to permit persons to whom the
+;;; Software is furnished to do so, subject to the following
+;;; conditions:
+
+;;; The above copyright notice and this permission notice shall be
+;;; included in all copies or substantial portions of the Software.
+
+;;; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+;;; EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+;;; OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+;;; NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+;;; HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+;;; WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+;;; FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+;;; OTHER DEALINGS IN THE SOFTWARE.
+
+;; (defpackage :cl-observer
+;;   (:use common-lisp
+;;         #+sbcl sb-mop
+;;         #+clisp mop)
+;;   (:export observable observe add-observer))
+
+;; (in-package :cl-observer)
+
 (defclass observable ()
-  ((observers
-    :initform (make-hash-table)
-    :accessor observers)))
+  ((observers :initform (make-hash-table))))
+
+(defmethod validate-superclass ((class observable) (superclass standard-class))
+  t)
+
+(defmethod (setf slot-value-using-class) :around
+    (new (observable observable) instance slot)
+  (let ((slot-name (slot-definition-name slot)))
+    (if (slot-boundp instance slot-name)
+        (let ((old (slot-value instance slot-name)))
+          (multiple-value-prog1 (call-next-method)
+            (dolist (observer (observers instance slot-name))
+              (funcall observer new old))))
+        (call-next-method))))
+
+(defun observers (instance slot-name)
+  (gethash slot-name (slot-value instance 'observers)))
+
+(defun (setf observers) (new-value instance slot-name)
+  (setf (gethash slot-name (slot-value instance 'observers)) new-value))
+
+(defun add-observer (fn instance slot-name)
+  (pushnew fn (observers instance slot-name)))
+
+(defmacro observe ((instance slot-name &optional new old) &body body)
+  (let ((new (or new (gensym)))
+        (old (or old (gensym))))
+    `(add-observer (lambda (&optional ,new ,old)
+                     (declare (ignorable ,new ,old))
+                     ,@body)
+                   ,instance ,slot-name)))
+
 
 (defclass player (observable)
   ((health
@@ -22,38 +84,14 @@
 
    (events
     :initarg :events
+    :initform nil
     :accessor events)))
 
-(defmacro observable-slots (classname &rest slotnames)
-  `(progn
-     ,@(mapcar (lambda (slotname)
-                 `(defmethod (setf ,slotname) :after (val (instance ,classname))
-                             (mapc (lambda (observer)
-                                     (funcall observer val))
-                                   (gethash ',slotname (observers instance)))))
-               slotnames)))
+(defvar rob (make-instance 'player))
+(defvar joe (make-instance 'player))
 
-(defmethod add-observer ((observed observable) slotname fn)
-  (setf (gethash slotname (observers observed))
-        (nconc (gethash slotname (observers observed)) (list fn))))
+(defvar office  (make-instance 'game-room))
+(defvar kitchen (make-instance 'game-room))
 
-
-(defun room-subscribe-to-player (room player)
-  (mapc (lambda (slotname)
-          (add-observer player
-                        slotname
-                        (lambda (val)
-                          (setf (events room) (list slotname val)))))
-        '(health ap)))
-
-(observable-slots player health ap)
-(observable-slots game-room events)
-
-(setf p1 (make-instance 'player))
-(setf p2 (make-instance 'player))
-
-(setf r1 (make-instance 'game-room))
-(setf r2 (make-instance 'game-room))
-
-(room-subscribe-to-player r1 p1)
-(room-subscribe-to-player r1 p2)
+(observe (rob 'health new old)
+  (setf (events kitchen) (list rob 'health new old)))
