@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 ;; The damage description data structure assumes that we'll never want
 ;; to completely remove a base data structure
 ;;

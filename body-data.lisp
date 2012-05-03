@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 ;; TODO read this data from CSV files
 (defparameter *body-part-prototypes* (make-hash-table))
 (defparameter *body-templates* (make-hash-table))

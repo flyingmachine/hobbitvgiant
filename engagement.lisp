@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 ;; Figure out who's in the engagement?
 (defun begin-engagement ())
 

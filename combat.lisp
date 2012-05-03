@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 ;; Target is the string name of a specific body part
 ;; returns # of AP points expended
 (defun attack (attacker defender weapon &optional target)

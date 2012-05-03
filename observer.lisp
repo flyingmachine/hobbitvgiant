@@ -1,3 +1,4 @@
+(in-package :hobbitvgiant)
 ;;; observer
 
 ;;; Copyright (c) 2008 Olaf Ritter von Ruppert
@@ -23,19 +24,18 @@
 ;;; FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 ;;; OTHER DEALINGS IN THE SOFTWARE.
 
-;; (defpackage :cl-observer
-;;   (:use common-lisp
-;;         #+sbcl sb-mop
-;;         #+clisp mop)
-;;   (:export observable observe add-observer))
-
-;; (in-package :cl-observer)
-
-(defclass observable ()
-  ((observers :initform (make-hash-table))))
+(defclass observable (standard-class)
+  ())
 
 (defmethod validate-superclass ((class observable) (superclass standard-class))
   t)
+
+(defmethod compute-slots ((class observable))
+  (cons (make-instance 'standard-effective-slot-definition
+                       :name 'observers
+                       :initform '(make-hash-table)
+                       :initfunction #'(lambda () (make-hash-table)))
+        (call-next-method)))
 
 (defmethod (setf slot-value-using-class) :around
     (new (observable observable) instance slot)
@@ -64,8 +64,7 @@
                      ,@body)
                    ,instance ,slot-name)))
 
-
-(defclass player (observable)
+(defclass player ()
   ((health
     :initarg :health
     :initform 100
@@ -74,9 +73,10 @@
    (ap
     :initarg :ap
     :initform 20
-    :accessor ap)))
+    :accessor ap))
+  (:metaclass observable))
 
-(defclass game-room (observable)
+(defclass game-room ()
   ((description
     :initarg :description
     :initform "It's a room"
@@ -85,7 +85,12 @@
    (events
     :initarg :events
     :initform nil
-    :accessor events)))
+    :accessor events))
+  (:metaclass observable))
+
+(defclass foo ()
+  ((x :accessor foo-x :initarg :x))
+  (:metaclass observable))
 
 (defvar rob (make-instance 'player))
 (defvar joe (make-instance 'player))

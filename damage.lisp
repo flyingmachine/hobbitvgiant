@@ -1,8 +1,11 @@
+(in-package :hobbitvgiant)
+
 ;; ---
 ;; Damage
 ;; ---
-(defparameter *damage-types* '(slice blunt pierce fire ice))
-(defparameter *damage-set-types* '(1h 2h thrown))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defparameter *damage-types* '(slice blunt pierce fire ice))
+  (defparameter *damage-set-types* '(1h 2h thrown)))
 
 ;; create a damage hash
 ;;
@@ -10,6 +13,7 @@
 ;; *damage-types* list
 ;; TODO make a macro so that I don't have to list the keys?
 (defun make-damage (default &key slice blunt pierce fire ice)
+  (declare (special *damage-types*))
   (macrolet ((setter ()
                `(progn
                   ,@(mapcar (lambda (dtype)

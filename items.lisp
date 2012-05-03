@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 ;; eventually add support for enchantments
 ;; would like damage-sets to be a alist
 ;;

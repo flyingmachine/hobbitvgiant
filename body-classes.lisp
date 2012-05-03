@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 ;; Bodies
 ;; ======
 ;; 
@@ -103,8 +105,6 @@
 
 (defmethod modify-damage ((body-part body-part) damage-type modification)
   (incf (damage-for (damage-received body-part) damage-type) modification))
-
-(defgeneric defproxy (proxy-name proxied-name method-name))
 
 (defmacro defproxy (proxy-name proxied-name method-name)
   `(defmethod ,method-name ((,proxy-name ,proxy-name))

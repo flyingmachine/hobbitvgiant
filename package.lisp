@@ -1,5 +1,6 @@
 ;;;; package.lisp
 
 (defpackage #:hobbitvgiant
-  (:use #:cl))
-
+  (:use common-lisp
+        #+sbcl sb-mop
+        #+clisp mop))

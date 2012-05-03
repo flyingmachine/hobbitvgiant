@@ -1,3 +1,5 @@
+(in-package :hobbitvgiant)
+
 (defparameter *player-health* 0)
 (defparameter *giant-health* 0)
 
