@@ -37,8 +37,13 @@
     (notify-player player 'room new))
   
   (observe ((body player) 'stamina (symb 'room (id room)) new)
-    (setf (latest-event room) (list player 'stamina new))))
+    (setf (latest-event room) (list player 'stamina new)))
+
+  (observe-each ((body-parts (body player)) 'damage-received (symb 'room (id room)) new)
+    (setf (latest-event room) (list player 'dam-received new))))
 
 ;; requires 'remove observer' fun or macro
 (defun deregister-player (room player)
+  (remove-observer room 'latest-event (symb-up 'player- (name player)))
+  ;; TODO remove all other observers
   )

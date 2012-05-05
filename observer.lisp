@@ -69,3 +69,12 @@
                      ,@body)
                    ,instance ,slot-name ,observer-name)))
 
+(defmacro observe-each ((instances slot-name observer-name &optional new old) &body body)
+  (let ((new  (or new (gensym)))
+        (old  (or old (gensym)))
+        (ivar (gensym)))
+    `(dolist (,ivar ,instances)
+       (add-observer (lambda (&optional ,new ,old)
+                       (declare (ignorable ,new ,old))
+                       ,@body)
+                     ,ivar ,slot-name ,observer-name))))
