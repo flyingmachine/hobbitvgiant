@@ -68,3 +68,4 @@
                      (declare (ignorable ,new ,old))
                      ,@body)
                    ,instance ,slot-name ,observer-name)))
+

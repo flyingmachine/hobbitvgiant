@@ -19,8 +19,6 @@
 ;; prototypes using body templates. A human would have a different
 ;; template from a spider.
 
-;; TODO add in a body graph to handle height
-;; each node is a body part, each edge value is length?
 (defparameter *default-damage-descriptions*
   (make-damage nil
                :slice (pairsr 1  "lightly scratched"
@@ -81,19 +79,16 @@
 ;; ---
 ;; body parts
 ;; ---
-(defclass body-part ()
+(defclass body-part (game-object named-object)
   ((prototype
     :initarg :prototype
     :accessor prototype)
 
-   (name
-    :initarg :name
-    :reader  name)
-
    (damage-received
     :initarg :damage-received
     :initform (make-damage 0)
-    :accessor damage-received)))
+    :accessor damage-received))
+  (:metaclass observable))
 
 (defun make-body-part (prototype name)
   (make-instance 'body-part
@@ -105,6 +100,7 @@
 
 (defmethod modify-damage ((body-part body-part) damage-type modification)
   (incf (damage-for (damage-received body-part) damage-type) modification))
+
 
 (defmacro defproxy (proxy-name proxied-name method-name)
   `(defmethod ,method-name ((,proxy-name ,proxy-name))
@@ -145,7 +141,7 @@
 ;; ---
 ;; bodies
 ;; ---
-(defclass body ()
+(defclass body (game-object)
   ((body-layers
     :initarg :body-layers
     :accessor body-layers)
@@ -197,7 +193,8 @@
     :documentation "Used to determine whether to prompt for action during combat"
     :initarg :player
     :initform nil
-    :reader player)))
+    :reader player))
+  (:metaclass observable))
 
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
@@ -256,7 +253,6 @@
 ;; re-associating the actual layer object with the created body part object
 (defun parts-for-layer (body-part-names body-parts)
   (remove-if-not (lambda (name) (position name body-part-names)) body-parts :key #'name))
-(defun within ())
 
 (defun body-part (body part-name)
   (find part-name (body-parts body) :key #'name :test #'equal))

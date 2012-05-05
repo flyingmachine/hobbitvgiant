@@ -35,50 +35,17 @@
 (defvar hobbit (make-body 'humanoid 0.8))
 (defvar dagger (select-item "dagger"))
 
-(defclass player ()
-  ((player-name
-    :initarg :player-name
-    :accessor player-name)
-   (health
-    :initarg :health
-    :initform 100
-    :accessor health)
-
-   (ap
-    :initarg :ap
-    :initform 20
-    :accessor ap))
-  (:metaclass observable))
-
-(defclass game-room ()
-  ((description
-    :initarg :description
-    :initform "It's a room"
-    :accessor description)
-
-   (latest-event
-    :initarg :events
-    :initform nil
-    :accessor latest-event))
-  (:metaclass observable))
-
-(defvar rob (make-instance 'player :player-name "rob"))
-(defvar joe (make-instance 'player :player-name "joe"))
+(defvar rob (make-instance 'player
+                           :name "rob"
+                           :body giant))
+(defvar joe (make-instance 'player
+                           :name "joe"
+                           :body hobbit))
 
 (defvar office  (make-instance 'game-room))
 (defvar kitchen (make-instance 'game-room))
 
-(defun room-event (player event)
-  (if (eql player (car event))
-      (format t "Your health is now ~a~%" (third event))
-      (format t "~a's health is now ~a~%" (player-name (car event)) (third event))))
+(pushnew rob (players office))
+(pushnew joe (players office))
 
-(observe (rob 'health 'room-observer new old)
-  (setf (latest-event kitchen) (list rob 'health new old)))
-
-(observe (joe 'health 'room-observer new old)
-  (setf (latest-event kitchen) (list joe 'health new old)))
-
-(observe (kitchen 'latest-event 'broadcaster new)
-  (room-event rob new)
-  (room-event joe new))
+(attack hobbit giant dagger)

@@ -13,7 +13,6 @@
 ;; *damage-types* list
 ;; TODO make a macro so that I don't have to list the keys?
 (defun make-damage (default &key slice blunt pierce fire ice)
-  (declare (special *damage-types*))
   (macrolet ((setter ()
                `(progn
                   ,@(mapcar (lambda (dtype)
@@ -33,4 +32,4 @@
 ;; ---
 ;; Status Effects
 ;; ---
-(defparameter *status-effects* '(poison stun blind bound paralyzed))
+(defparameter *status-effects* '(poisoned stunned blind bound paralyzed))

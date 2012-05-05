@@ -12,13 +12,10 @@
 ;; support this.
 ;;
 ;; TODO does balance change when switching 1h/2h?
-(defclass item ()
+(defclass item (game-object named-object)
   ((weapon-stats
     :initarg :weapon-stats
     :reader weapon-stats)
-   (name
-    :initarg :name
-    :reader name)
    (description
     :initarg :description
     :accessor description)
