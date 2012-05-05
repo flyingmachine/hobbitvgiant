@@ -141,7 +141,7 @@
 ;; ---
 ;; bodies
 ;; ---
-(defclass body (game-object)
+(defclass body (game-object named-object)
   ((body-layers
     :initarg :body-layers
     :accessor body-layers)

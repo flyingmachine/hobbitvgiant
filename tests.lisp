@@ -47,5 +47,3 @@
 
 (pushnew rob (players office))
 (pushnew joe (players office))
-
-(attack hobbit giant dagger)

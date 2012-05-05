@@ -30,14 +30,14 @@
   (observe (game-room 'players 'player-observer new old)
     (if-let (removed (set-difference old new))
       (deregister-player game-room (first removed))
-      (register-player game-room (first new)))))
+      (register-player game-room (car new)))))
 
 (defun register-player (room player)
   (observe (room 'latest-event (symb-up 'player- (name player)) new)
-    (notify-player rob 'room new))
+    (notify-player player 'room new))
   
-  (observe ((body player) 'health (symb 'room (id room)) new)
-    (setf (latest-event room) (player 'health new))))
+  (observe ((body player) 'stamina (symb 'room (id room)) new)
+    (setf (latest-event room) (list player 'stamina new))))
 
 ;; requires 'remove observer' fun or macro
 (defun deregister-player (room player)

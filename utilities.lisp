@@ -4,6 +4,9 @@
   (with-output-to-string (s)
     (dolist (a args) (princ a s))))
 
+(defun last1 (lst)
+  (car (last lst)))
+
 (defun symb (&rest args)
   (values (intern (apply #'mkstr args))))
 
