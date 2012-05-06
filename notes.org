@@ -121,3 +121,27 @@ list is stored in a slot
 *** make a method observable
 **** before value
 **** after value
+** event structure
+*** what does the browser need?
+**** object which has changed
+***** body
+***** room
+**** which attribute of the object changed
+**** the new value of the attribute
+*** examples
+**** room
+***** (room 'bodies (p1 p2 p3))
+***** (room 'items (i1 i2 i3))
+**** body
+***** (body 'health 20)
+***** (body 'maxhealth 2
+*** OR send new entire structure, but just with affected attributes
+*** ex:
+(body
+  (body-parts
+    (left-arm
+      (damage-received
+        (slice 10))))
+  (health 10))
+
+(room (bodies (b1 b2 b3))

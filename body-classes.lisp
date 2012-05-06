@@ -95,6 +95,7 @@
                  :prototype prototype
                  :name name))
 
+;; TODO modify so it takes pairs of dtype, value
 (defgeneric modify-damage (game-object damage-type modification)
   (:documentation "Adds 'modification' to the damage type of a damage object associated with a game object"))
 
@@ -219,10 +220,10 @@
            (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*)))
 
     (observe (body 'stamina 'room-notifier new old)
-      (setf (latest-event (game-room body)) (list body 'stamina new)))
+      (setf (latest-event (game-room body)) (list body (list 'stamina new))))
     
-    (observe-each ((body-parts body) 'damage-received 'room new)
-      (setf (latest-event (game-room body)) (list body 'dam-received new)))
+    (observe-each ((body-parts body) body-part 'damage-received 'room new)
+      (setf (latest-event (game-room body)) (list body (list 'body-parts (list body-part new)))))
     
     body))
 
