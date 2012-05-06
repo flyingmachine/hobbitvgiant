@@ -104,7 +104,8 @@
 (defmethod modify-damage :around ((body-part body-part) damage-type modification)
   (let ((old (damage-for (damage-received body-part) damage-type))
         (new (call-next-method)))
-    (call-observers (observers body-part 'damage-received) new old)
+    (when (not (eql new old))
+      (call-observers (observers body-part 'damage-received) new old))
     new))
 
 (defmacro defproxy (proxy-name proxied-name method-name)
