@@ -101,6 +101,11 @@
 (defmethod modify-damage ((body-part body-part) damage-type modification)
   (incf (damage-for (damage-received body-part) damage-type) modification))
 
+(defmethod modify-damage :around ((body-part body-part) damage-type modification)
+  (let ((old (damage-for (damage-received body-part) damage-type))
+        (new (call-next-method)))
+    (call-observers (observers body-part 'damage-received) new old)
+    new))
 
 (defmacro defproxy (proxy-name proxied-name method-name)
   `(defmethod ,method-name ((,proxy-name ,proxy-name))
@@ -202,10 +207,23 @@
     :accessor game-room))
   (:metaclass observable))
 
-;; Create observers for body
-(defmethod initialize-instance :after ((body body) &key)
-  (observe (body 'stamina 'room-notifier new old)
-    (setf (latest-event (game-room body)) (list body 'stamina new))))
+(defun make-body (template-name &optional (scale 1))
+  (let ((template (gethash template-name *body-templates*))
+        (body (make-instance 'body
+                             :scale scale)))
+    (setf (body-layers body)
+          (create-body-layers
+           (scale body)
+           template
+           (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*)))
+
+    (observe (body 'stamina 'room-notifier new old)
+      (setf (latest-event (game-room body)) (list body 'stamina new)))
+    
+    (observe-each ((body-parts body) 'damage-received 'room new)
+      (setf (latest-event (game-room body)) (list body 'dam-received new)))
+    
+    body))
 
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
@@ -227,18 +245,6 @@
 
 (defmethod current-health ((body body))
   (- (max-health body) (reduce #'+ (mappend (lambda (bp) (hash-values (damage-received bp))) (body-parts body)))))
-
-;; FIXME why is it necessary to use copy-tree? use mappend?
-(defun make-body (template-name &optional (scale 1))
-  (let ((template (gethash template-name *body-templates*))
-        (body (make-instance 'body
-                             :scale scale)))
-    (setf (body-layers body)
-          (create-body-layers
-           (scale body)
-           template
-           (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*)))
-    body))
 
 ;; Associate bodyparts with layers and set base to previously created layer
 (defun create-body-layers (scale template body-parts)

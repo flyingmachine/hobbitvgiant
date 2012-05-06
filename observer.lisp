@@ -43,9 +43,12 @@
     (if (slot-boundp instance slot-name)
         (let ((old (slot-value instance slot-name)))
           (multiple-value-prog1 (call-next-method)
-            (dolist (observer (observers instance slot-name))
-              (funcall observer new old))))
+            (call-observers (observers instance slot-name) new old)))
         (call-next-method))))
+
+(defun call-observers (observers new old)
+  (dolist (observer observers)
+    (funcall observer new old)))
 
 (defun observers (instance slot-name)
   (if-let (h (gethash slot-name (slot-value instance 'observers)))

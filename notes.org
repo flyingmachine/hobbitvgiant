@@ -117,3 +117,7 @@ list is stored in a slot
 **** bodies are completely unaware of the nature of their observers
 **** rooms are the "locus of control" when it comes to creating observers
 **** drawback: have to create and destroy observers when the only thing changing is the room
+** observer structure
+*** make a method observable
+**** before value
+**** after value
