@@ -223,7 +223,12 @@
       (setf (latest-event (game-room body)) (list body (list 'stamina new))))
     
     (observe-each ((body-parts body) body-part 'damage-received 'room new)
-      (setf (latest-event (game-room body)) (list body (list 'body-parts (list body-part new)))))
+      (setf (latest-event (game-room body))
+            (list body
+                  (list 'body-parts
+                        (list body-part new))
+                  (list 'current-health
+                        (current-health body)))))
     
     body))
 
