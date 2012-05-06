@@ -105,3 +105,15 @@ use as weapons, use for fires
 **** the positions of all in the room
 **** the giant's health
 *** 
+** possible architectures
+*** more knowledge of observers
+**** bodies "know" they need to notify rooms
+all observed actions go to the body's room, which is a slot
+**** rooms "know" they need to notify bodies
+all notifications iterate over the list of bodies in the room. the
+list is stored in a slot
+**** room registration consists of updating above slots
+*** less knowledge of observers
+**** bodies are completely unaware of the nature of their observers
+**** rooms are the "locus of control" when it comes to creating observers
+**** drawback: have to create and destroy observers when the only thing changing is the room

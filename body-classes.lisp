@@ -193,8 +193,19 @@
     :documentation "Used to determine whether to prompt for action during combat"
     :initarg :player
     :initform nil
-    :reader player))
+    :accessor player)
+
+   (game-room
+    :documentation "The current location of the body"
+    :initarg :game-room
+    :initform nil
+    :accessor game-room))
   (:metaclass observable))
+
+;; Create observers for body
+(defmethod initialize-instance :after ((body body) &key)
+  (observe (body 'stamina 'room-notifier new old)
+    (setf (latest-event (game-room body)) (list body 'stamina new))))
 
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))

@@ -31,19 +31,19 @@
         (weapon   (select-item "dagger")))
     (body-parts-for-target-selection attacker defender weapon "head")))
 
-(defvar giant  (make-body 'humanoid 2.3))
-(defvar hobbit (make-body 'humanoid 0.8))
-(defvar dagger (select-item "dagger"))
+(defparameter giant  (make-body 'humanoid 2.3))
+(defparameter hobbit (make-body 'humanoid 0.8))
+(defparameter dagger (select-item "dagger"))
 
-(defvar rob (make-instance 'player
+(defparameter rob (make-instance 'player
                            :name "rob"
                            :body giant))
-(defvar joe (make-instance 'player
+(defparameter joe (make-instance 'player
                            :name "joe"
                            :body hobbit))
 
-(defvar office  (make-instance 'game-room))
-(defvar kitchen (make-instance 'game-room))
+(defparameter office  (make-instance 'game-room))
+(defparameter kitchen (make-instance 'game-room))
 
-(pushnew rob (players office))
-(pushnew joe (players office))
+(move-to-room hobbit office)
+(move-to-room giant  office)
