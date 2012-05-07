@@ -87,7 +87,11 @@
    (damage-received
     :initarg :damage-received
     :initform (make-damage 0)
-    :accessor damage-received))
+    :accessor damage-received)
+   (body-layer
+    :documentation "Body layer this belongs to"
+    :initarg :body-layer
+    :accessor body-layer))
   (:metaclass observable))
 
 (defun make-body-part (prototype name)
@@ -113,6 +117,7 @@
   `(defmethod ,method-name ((,proxy-name ,proxy-name))
      (,method-name (,proxied-name ,proxy-name))))
 
+(defproxy body-part body-layer body)
 (defproxy body-part prototype damage-descriptions)
 (defproxy body-part prototype targeting-weight)
 
@@ -123,7 +128,7 @@
   ((body
     :documentation "The body this belongs to. Used for scale."
     :initarg :body
-    :reader body)
+    :accessor body)
    
    (body-parts
     :documentation "The body parts for this layer"
@@ -139,11 +144,17 @@
     :initarg :base
     :reader  base)))
 
-(defun make-body-layer (body-parts height base)
-  (make-instance 'body-layer
-                 :body-parts body-parts
-                 :height height
-                 :base base))
+(defun make-body-layer (body body-parts height base)
+  (let1 layer (make-instance 'body-layer
+                             :body body
+                             :body-parts body-parts
+                             :height height
+                             :base base)
+    (mapc (lambda (body-part)
+            (setf (body-layer body-part) layer))
+          body-parts)
+    
+    layer))
 
 ;; ---
 ;; bodies
@@ -213,11 +224,16 @@
   (let ((template (gethash template-name *body-templates*))
         (body (make-instance 'body
                              :scale scale)))
-    (setf (body-layers body)
-          (create-body-layers
-           (scale body)
+
+    (let1 layers (create-body-layers
+           body
            template
-           (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*)))
+           (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*))
+      (setf (body-layers body) layers)
+      (mapc (lambda (layer)
+              (setf (body layer) body))
+            (mapcar #'cdr layers)))
+
 
     (macrolet ((observe-attributes (&rest attributes)
                  `(progn
@@ -230,11 +246,19 @@
       (setf (latest-event (game-room body))
             (list (id body)
                   (list 'body-parts
-                        (list (name body-part) new))
+                        (serialize body-part))
                   (list 'current-health
                         (current-health body)))))
     
     body))
+
+;; TODO how can I eliminate the need for this?
+(defmethod serialize ((body-part body-part))
+  (list (list 'name (name body-part))
+        (list 'damage-received
+              (mapcar (lambda (damage-type)
+                        (list damage-type (damage-for (damage-received body-part) damage-type)))
+                      *damage-types*))))
 
 (defmethod body-parts ((body body))
   (mappend (lambda (layer) (body-parts (cdr layer))) (body-layers body)))
@@ -258,16 +282,16 @@
   (- (max-health body) (reduce #'+ (mappend (lambda (bp) (hash-values (damage-received bp))) (body-parts body)))))
 
 ;; Associate bodyparts with layers and set base to previously created layer
-(defun create-body-layers (scale template body-parts)
+(defun create-body-layers (body template body-parts)
   (labels ((compose (layers acc)
              (if (consp layers)
                  (let* ((layer           (car layers))
                         (layer-name      (first layer))
-                        (height          (* scale (second layer)))
+                        (height          (* (scale body) (second layer)))
                         (body-part-names (mapcar #'cdr (third layer))))
                    (compose
                     (cdr layers)
-                    (append1 acc (cons layer-name (make-body-layer (parts-for-layer body-part-names body-parts) height (cdr (last acc)))))))
+                    (append1 acc (cons layer-name (make-body-layer body (parts-for-layer body-part-names body-parts) height (cdr (last acc)))))))
                  acc)))
     (compose template nil)))
 

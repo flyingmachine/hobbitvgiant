@@ -145,6 +145,9 @@ list is stored in a slot
   (health 10))
 
 (room (bodies (b1 b2 b3))
+* associations
+** macro for saying that all body parts belong to a layer
+** macro for saying that a layer belongs to a body
 * UI
 ** Data to be aware of
 *** body

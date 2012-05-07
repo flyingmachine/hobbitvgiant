@@ -46,7 +46,7 @@
 
                     (make-body-layer-template 'upper-leg 520
                      '(femoral-artery "left femoral artery" "right femoral artery")
-                     '(thigh "left thight" "right thigh"))
+                     '(thigh "left thigh" "right thigh"))
 
                     (make-body-layer-template 'pelvis 130
                      'junk
