@@ -145,3 +145,19 @@ list is stored in a slot
   (health 10))
 
 (room (bodies (b1 b2 b3))
+* UI
+** Data to be aware of
+*** body
+**** body id
+**** player id
+**** attributes - names and values
+**** body parts
+**** name
+*** room
+**** name
+**** description
+**** items in room
+**** bodies in room
+*** player
+**** player id
+
