@@ -219,8 +219,12 @@
            template
            (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*)))
 
-    (observe (body 'stamina 'room-notifier new old)
-      (setf (latest-event (game-room body)) (list body (list 'stamina new))))
+    (macrolet ((observe-attributes (&rest attributes)
+                 `(progn
+                    ,@(mapcar (lambda (attribute)
+                                `(observe (body ,attribute 'room-notifier new old)
+                                   (setf (latest-event (game-room body)) (list body (list ,attribute new))))) attributes))))
+      (observe-attributes 'strength 'stamina 'agility 'dexterity))
     
     (observe-each ((body-parts body) body-part 'damage-received 'room new)
       (setf (latest-event (game-room body))
