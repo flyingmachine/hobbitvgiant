@@ -109,3 +109,18 @@
 
 (defmethod current-health ((body body))
   (- (max-health body) (reduce #'+ (mappend (lambda (bp) (hash-values (damage-received bp))) (body-parts body)))))
+
+(defmethod player? ((body body))
+  (not (null (player body))))
+
+;; TODO should this be a before method that doesn't do
+;; call-next-method if the body belongs to a player?
+(defmethod name ((body body))
+  (if (player? body)
+      (name (player body))
+      (call-next-method)))
+
+(defmethod serialize ((body body))
+  (list (list 'name (name body))
+        (list 'current-health (current-health body))
+        (list 'body-parts (mapcar #'serialize (body-parts body)))))

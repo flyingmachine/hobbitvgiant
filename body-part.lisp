@@ -27,7 +27,7 @@
         (setf (latest-event (game-room body))
               (list (id body)
                     (list 'body-parts
-                          (serialize body-part))
+                          (list (serialize body-part)))
                     (list 'current-health
                           (current-health body))))))
     

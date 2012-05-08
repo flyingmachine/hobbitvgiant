@@ -8,4 +8,5 @@
 (defclass named-object ()
   ((name
     :initarg :name
+    :initform nil
     :reader name)))
