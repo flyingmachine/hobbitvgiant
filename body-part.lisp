@@ -24,13 +24,13 @@
                  :name name))
 
 ;; TODO modify so it takes pairs of dtype, value
-(defgeneric modify-damage (game-object damage-type modification)
+(defgeneric modify-damage (game-object damage)
   (:documentation "Adds 'modification' to the damage type of a damage object associated with a game object"))
 
-(defmethod modify-damage ((body-part body-part) damage-type modification)
+(defmethod modify-damage ((body-part body-part) damage)
   (incf (damage-for (damage-received body-part) damage-type) modification))
 
-(defmethod modify-damage :around ((body-part body-part) damage-type modification)
+(defmethod modify-damage :around ((body-part body-part) damage)
   (let ((old (damage-for (damage-received body-part) damage-type))
         (new (call-next-method)))
     (when (not (eql new old))
