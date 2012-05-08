@@ -93,3 +93,10 @@
   `(let ((,varname ,form))
      (if ,varname
          ,@body)))
+
+;; Given a collection, return an alist where the car is the member and
+;; the cdr is the supplied function called on the member
+(defun alist-by-func (collection func)
+  (mapcar (lambda (member)
+            (cons member (funcall func member)))
+          collection))
