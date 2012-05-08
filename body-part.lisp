@@ -19,11 +19,20 @@
   (:metaclass observable))
 
 (defun make-body-part (prototype name)
-  (make-instance 'body-part
-                 :prototype prototype
-                 :name name))
+  (let1 body-part (make-instance 'body-part
+                                 :prototype prototype
+                                 :name name)
+    (observe (body-part 'damage-received 'room-notifier)
+      (let1 body (body body-part)
+        (setf (latest-event (game-room body))
+              (list (id body)
+                    (list 'body-parts
+                          (serialize body-part))
+                    (list 'current-health
+                          (current-health body))))))
+    
+    body-part))
 
-;; TODO modify so it takes pairs of dtype, value
 (defgeneric modify-damage (object damage)
   (:documentation "Adds 'modification' to the damage type of a damage object associated with a game object"))
 
@@ -44,6 +53,8 @@
 (defproxy body-part prototype damage-descriptions)
 (defproxy body-part prototype targeting-weight)
 
+(defgeneric serialize (object)
+  (:documentation "Represent object and its attributes as a list"))
 
 ;; TODO how can I eliminate the need for this?
 (defmethod serialize ((body-part body-part))

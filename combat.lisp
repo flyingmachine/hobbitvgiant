@@ -50,6 +50,7 @@
                    (build (cdr layers)
                           (append acc (mappend (lambda (body-part)
                                                  (list (cons (cond
+                                                               ;; Handle height penalty
                                                                ((equal (name body-part) target) (* (if (< reach acc-height) 8 12) (targeting-weight body-part)))
                                                                ((< reach acc-height) (/ (targeting-weight body-part) 2))
                                                                (t  (targeting-weight body-part)))

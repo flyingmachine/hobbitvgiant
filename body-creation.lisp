@@ -5,10 +5,11 @@
         (body (make-instance 'body
                              :scale scale)))
 
+    ;; create layers and associate them with body
     (let1 layers (create-body-layers
-           body
-           template
-           (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*))
+                  body
+                  template
+                  (create-parts-from-prototype-pairs (mappend #'third template) *body-part-prototypes*))
       (setf (body-layers body) layers)
       (mapc (lambda (layer)
               (setf (body layer) body))
@@ -21,14 +22,6 @@
                                 `(observe (body ,attribute 'room-notifier new old)
                                    (setf (latest-event (game-room body)) (list (id body) (list ,attribute new))))) attributes))))
       (observe-attributes 'strength 'stamina 'agility 'dexterity))
-    
-    (observe-each ((body-parts body) body-part 'damage-received 'room-notifier new)
-      (setf (latest-event (game-room body))
-            (list (id body)
-                  (list 'body-parts
-                        (serialize body-part))
-                  (list 'current-health
-                        (current-health body)))))
     
     body))
 
