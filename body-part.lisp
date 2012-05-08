@@ -24,17 +24,16 @@
                  :name name))
 
 ;; TODO modify so it takes pairs of dtype, value
-(defgeneric modify-damage (game-object damage)
+(defgeneric modify-damage (object damage)
   (:documentation "Adds 'modification' to the damage type of a damage object associated with a game object"))
 
 (defmethod modify-damage ((body-part body-part) damage)
-  (incf (damage-for (damage-received body-part) damage-type) modification))
+  (mergehash (damage-received body-part) damage #'+))
 
 (defmethod modify-damage :around ((body-part body-part) damage)
-  (let ((old (damage-for (damage-received body-part) damage-type))
+  (let ((old (damage-received body-part))
         (new (call-next-method)))
-    (when (not (eql new old))
-      (call-observers (observers body-part 'damage-received) new old))
+    (call-observers (observers body-part 'damage-received) new old)
     new))
 
 (defmacro defproxy (proxy-name proxied-name method-name)

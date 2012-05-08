@@ -22,14 +22,7 @@
       ))
 
 (defun apply-damage (attacker defender weapon body-part)
-  (modify-damage body-part (damage-dealt (active-damage-set weapon))))
-
-;; TODO is there some way to use closures instead of the damage types global?
-(defun damage-dealt (weapon-damage)
-  (let ((damage-arg-list (mappend (lambda (damage-type)
-                                    (list damage-type (random-damage (damage-for weapon-danage damage-type))))
-                                  *damage-types*)))
-    (apply #'make-damage (append (list 0) damage-arg-list))))
+  (modify-damage body-part (maphashv #'random-damage (active-damage-set weapon))))
 
 ;; will probably end up making this more general
 (defun random-damage (base-damage)

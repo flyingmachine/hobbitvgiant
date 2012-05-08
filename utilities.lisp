@@ -100,3 +100,18 @@
   (mapcar (lambda (member)
             (cons member (funcall func member)))
           collection))
+
+(defun maphashv (function-designator hash-table)
+  (let ((new-hash (make-hash-table)))
+    (maphash (lambda (k v)
+               (setf (gethash k new-hash) (funcall function-designator v)))
+             hash-table)
+    new-hash))
+
+;; modify the values of hash a by applying a function to values from
+;; hash a and hash b
+(defun mergehash (hash-a hash-b fn)
+  (maphash (lambda (k v)
+             (setf (gethash k hash-a) (funcall fn v (gethash k hash-b))))
+           hash-a)
+  hash-a)
