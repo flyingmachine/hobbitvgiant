@@ -20,19 +20,9 @@
   (:metaclass observable))
 
 (defun make-body-part (prototype name)
-  (let1 body-part (make-instance 'body-part
-                                 :prototype prototype
-                                 :name name)
-    (observe (body-part 'damage-received 'room-notifier)
-      (let1 body (body body-part)
-        (setf (latest-event (game-room body))
-              (list (id body)
-                    (list 'body-parts
-                          (list (serialize body-part)))
-                    (list 'current-health
-                          (current-health body))))))
-    
-    body-part))
+  (make-instance 'body-part
+                 :prototype prototype
+                 :name name))
 
 (defgeneric modify-damage (object damage)
   (:documentation "Adds 'modification' to the damage type of a damage object associated with a game object"))

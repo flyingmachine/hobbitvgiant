@@ -22,6 +22,14 @@
                                 `(observe (body ,attribute 'room-notifier new old)
                                    (setf (latest-event (game-room body)) (list (id body) (list ,attribute new))))) attributes))))
       (observe-attributes 'strength 'stamina 'agility 'dexterity))
+
+    (observe-each ((body-parts body) body-part 'damage-received 'room-notifier new)
+      (setf (latest-event (game-room body))
+            (list (id body)
+                  (list 'body-parts
+                        (serialize body-part))
+                  (list 'current-health
+                        (current-health body)))))
     
     body))
 
