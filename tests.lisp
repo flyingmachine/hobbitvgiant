@@ -10,7 +10,9 @@
     (describe-game-object body-part)))
 
 (defun test-body ()
-  (let ((body (make-body 'humanoid)))
+  (let ((body (make-body 'humanoid))
+        (room (make-instance 'game-room)))
+    (move-to-room body room)
     (modify-damage (body-part body "neck")        (make-damage 0 :slice 20))
     (modify-damage (body-part body "left eye")    (make-damage 0 :pierce 90))
     (modify-damage (body-part body "left eye")    (make-damage 0 :blunt 90))

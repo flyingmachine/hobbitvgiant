@@ -12,6 +12,7 @@
     :initarg :damage-received
     :initform (make-damage 0)
     :accessor damage-received)
+   
    (body-layer
     :documentation "Body layer this belongs to"
     :initarg :body-layer

@@ -24,4 +24,5 @@
                (:file "game-room")
                (:file "combat")
                (:file "engagement")
+               (:file "web-server")
                (:file "tests")))

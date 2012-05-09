@@ -23,7 +23,7 @@
 (defmethod initialize-instance :after ((game-room game-room) &key)
   (observe (game-room 'latest-event 'notify-bodies new old)
     (mapc (lambda (player) (notify-player player 'room new))
-          (mapcar #'player (bodies game-room)))))
+          (remove-if #'null (mapcar #'player (bodies game-room))))))
 
 (defun move-to-room (body new-room)
   (if-let (old-room (game-room body))
