@@ -23,7 +23,9 @@
 (defun test-attack ()
   (let ((attacker (make-body 'humanoid))
         (defender (make-body 'humanoid))
-        (weapon   (select-item "dagger")))
+        (weapon   (select-item "dagger"))
+        (room     (make-instance 'game-room)))
+    (move-to-room defender room)
     (attack attacker defender weapon)
     (look defender)))
 
