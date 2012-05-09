@@ -5,7 +5,7 @@
   :description "A web-based textish gamey thing"
   :author "Daniel Higginbotham <daniel@flyingmachinestudios.com>"
   :license "MIT"
-  :depends-on (#:hunchentoot)
+  :depends-on (#:hunchentoot #:iterate #:alexandria #:talcl #:buildnode)
   :components ((:file "package")
                (:file "hobbitvgiant")
                (:file "utilities")
