@@ -26,7 +26,7 @@
         (weapon   (select-item "dagger"))
         (room     (make-instance 'game-room)))
     (move-to-room defender room)
-    (attack attacker defender weapon)
+    (attack-body attacker defender weapon)
     (look defender)))
 
 (defun test-target ()

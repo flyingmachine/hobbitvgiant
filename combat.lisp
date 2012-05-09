@@ -2,7 +2,7 @@
 
 ;; Target is the string name of a specific body part
 ;; returns # of AP points expended
-(defun attack (attacker defender weapon &optional target)
+(defun attack-body (attacker defender weapon &optional target)
   (let ((thing-hit (attempt-hit attacker defender weapon target)))
     (if thing-hit
         (apply-damage attacker defender weapon thing-hit)
