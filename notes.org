@@ -164,3 +164,4 @@ list is stored in a slot
 *** player
 **** player id
 
+** How do I get coffeescript involved?
