@@ -5,7 +5,7 @@
   :description "A web-based textish gamey thing"
   :author "Daniel Higginbotham <daniel@flyingmachinestudios.com>"
   :license "MIT"
-  :depends-on (#:hunchentoot #:iterate #:alexandria #:talcl #:buildnode)
+  :depends-on (#:hunchentoot #:iterate #:alexandria #:talcl #:buildnode #:cl-json #:clws)
   :components ((:file "package")
                (:file "hobbitvgiant")
                (:file "utilities")
@@ -25,4 +25,5 @@
                (:file "combat")
                (:file "engagement")
                (:file "web-server")
+               (:file "clws-server")
                (:file "tests")))

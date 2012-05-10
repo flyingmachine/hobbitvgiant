@@ -49,8 +49,8 @@
 
 ;; TODO how can I eliminate the need for this?
 (defmethod serialize ((body-part body-part))
-  (list (list 'name (name body-part))
-        (list 'damage-received
+  (list (cons 'name (name body-part))
+        (cons 'damage-received
               (mapcar (lambda (damage-type)
-                        (list damage-type (damage-for (damage-received body-part) damage-type)))
+                        (cons damage-type (damage-for (damage-received body-part) damage-type)))
                       *damage-types*))))

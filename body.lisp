@@ -121,6 +121,8 @@
       (call-next-method)))
 
 (defmethod serialize ((body body))
-  (list (list 'name (name body))
-        (list 'current-health (current-health body))
-        (list 'body-parts (mapcar #'serialize (body-parts body)))))
+  (list (cons 'name (name body))
+        (cons 'id (id body))
+        (cons 'current-health (current-health body))
+        (cons 'max-health (max-health body))
+        (cons 'body-parts (mapcar #'serialize (body-parts body)))))
