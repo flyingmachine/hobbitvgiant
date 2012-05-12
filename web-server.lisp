@@ -12,7 +12,7 @@
       (hunchentoot:stop *acceptor*))
   (setf *acceptor* (make-instance 'hunchentoot:easy-acceptor
                                   :port port
-                                  :document-root (resource-path "www")))
+                                  :document-root (resource-path "public")))
   (hunchentoot:start *acceptor*))
 
 (hunchentoot:define-easy-handler (say-yo :uri "/yo") (name)
