@@ -165,3 +165,5 @@ list is stored in a slot
 **** player id
 
 ** How do I get coffeescript involved?
+* server
+** when do WS threads get created?
