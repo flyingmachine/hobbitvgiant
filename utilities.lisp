@@ -62,6 +62,9 @@
 (defun pairsr (&rest lst)
   (pairs lst))
 
+(defmacro keyed-pair (attribute object)
+  `(cons ',attribute (,attribute ,object)))
+
 (defun alist-values (alist)
   (mapcar #'cdr alist))
 

@@ -167,3 +167,9 @@ list is stored in a slot
 ** How do I get coffeescript involved?
 * server
 ** when do WS threads get created?
+* MVP
+** Create a character:
+*** name
+*** assigned to hobbit or giant
+** view stats
+*** yourself

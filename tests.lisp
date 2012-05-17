@@ -35,6 +35,9 @@
         (weapon   (select-item "dagger")))
     (body-parts-for-target-selection attacker defender weapon "head")))
 
+(defun test-keyed-pair ()
+  (macroexpand '(keyed-pair name body)))
+
 (defparameter giant  (make-body 'humanoid 2.3))
 (defparameter hobbit (make-body 'humanoid 0.8))
 (defparameter dagger (select-item "dagger"))
