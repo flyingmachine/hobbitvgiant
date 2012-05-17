@@ -1,6 +1,6 @@
 (in-package :hobbitvgiant)
 
-(defparameter *client* nil)
+(defparameter *clients* nil)
 
 (defun json-out ()
   (with-output-to-string (*standard-output*)
@@ -10,7 +10,7 @@
   ())
 
 (defmethod clws:resource-client-connected ((res hvg-resource) client)
-  (setf *client* client)
+  (push client *clients*)
   (clws:write-to-client-text client (json-out))
   (format t "got connection on hvg server from ~s : ~s~%" (clws:client-host client) (clws:client-port client))
   t)
@@ -21,7 +21,9 @@
 (defmethod clws:resource-received-text ((res hvg-resource) client message)
   (format t "got frame ~s from client ~s" message client)
   (setf (damage-for (damage-received (first (body-parts hobbit))) 'slice) (parse-integer message))
-  (clws:write-to-client-text client (json-out)))
+  (mapc (lambda (client)
+          (clws:write-to-client-text client (json-out)))
+        *clients*))
 
 (defmethod clws:resource-received-binary((res hvg-resource) client message)
   (format t "got binary frame ~s from client ~s" (length message) client)
