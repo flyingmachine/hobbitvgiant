@@ -2,9 +2,10 @@
   %title Hobbit v. Giant
 
 #player.panel
+  #name
   #health
-    %script
-      $(function(){RealtimeLine.chart([0, 39], "linear", RealtimeLine.tick, hobbit.healthPercentage);})
+    .text
+
 #panel
   %button#connector Connect!
   %br/
