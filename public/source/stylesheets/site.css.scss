@@ -30,3 +30,13 @@ a {
 #main {
   padding: 50px;
 }
+
+.x.axis line {
+  shape-rendering: auto;
+}
+
+.line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+}
