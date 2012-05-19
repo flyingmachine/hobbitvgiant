@@ -2,34 +2,31 @@
 
 (defparameter *clients* nil)
 
-(defun json-out ()
+(defun json-out (player)
   (with-output-to-string (*standard-output*)
-    (json:encode-json (serialize hobbit))))
+    (json:encode-json (serialize (body player)))))
 
 (defclass hvg-resource (clws:ws-resource)
   ())
 
 (defmethod clws:resource-client-connected ((res hvg-resource) client)
   (push client *clients*)
-  (clws:write-to-client-text client (json-out))
-  (format t "got connection on hvg server from ~s : ~s~%" (clws:client-host client) (clws:client-port client))
+  (mapc (lambda (client)
+          (clws:write-to-client-text client (json-out (add-player client "bill"))))
+        *clients*)
   t)
 
 (defmethod clws:resource-client-disconnected ((resource hvg-resource) client)
   (format t "Client disconnected from resource ~A: ~A~%" resource client))
 
 (defmethod clws:resource-received-text ((res hvg-resource) client message)
-  (format t "got frame ~s from client ~s" message client)
-  (setf (damage-for (damage-received (first (body-parts hobbit))) 'slice) (parse-integer message))
+  (setf (damage-for (damage-received (first (body-parts (body (client-player client))))) 'slice) (parse-integer message))
   (mapc (lambda (client)
-          (clws:write-to-client-text client (json-out)))
+          (clws:write-to-client-text client (json-out (client-player client))))
         *clients*))
 
-(defmethod clws:resource-received-binary((res hvg-resource) client message)
-  (format t "got binary frame ~s from client ~s" (length message) client)
-  (clws:write-to-client-binary client message))
-
 (defun start-clws ()
+  (start-game)
   (bordeaux-threads:make-thread (lambda ()
                                   (clws:run-server 12345))
                                 :name "hvg server")

@@ -38,19 +38,24 @@
 (defun test-keyed-pair ()
   (macroexpand '(keyed-pair name body)))
 
-(defparameter giant  (make-body 'humanoid 2.3))
-(defparameter hobbit (make-body 'humanoid 0.8))
-(defparameter dagger (select-item "dagger"))
 
-(defparameter rob (make-instance 'player
-                           :name "rob"
-                           :body giant))
-(defparameter joe (make-instance 'player
-                           :name "joe"
-                           :body hobbit))
 
-(defparameter office  (make-instance 'game-room))
-(defparameter kitchen (make-instance 'game-room))
+(defparameter *test-objs* (make-hash-table))
+(setf (gethash 'giant *test-objs*) (make-body 'humanoid 2.3))
 
-(move-to-room hobbit office)
-(move-to-room giant  office)
+(setf (gethash 'hobbit *test-objs*) (make-body 'humanoid 0.8))
+
+(setf (gethash 'dagger *test-objs*) (select-item "dagger"))
+
+(setf (gethash 'rob *test-objs*) (make-instance 'player
+                                                :name "rob"
+                                                :body (gethash 'giant *test-objs*)))
+(setf (gethash 'joe *test-objs*) (make-instance 'player
+                                                :name "joe"
+                                                :body (gethash 'hobbit *test-objs*)))
+
+(setf (gethash 'office *test-objs*) (make-instance 'game-room))
+(setf (gethash 'kitchen *test-objs*) (make-instance 'game-room))
+
+(move-to-room (gethash 'hobbit *test-objs*) (gethash 'office *test-objs*))
+(move-to-room (gethash 'giant *test-objs*)  (gethash 'office *test-objs*))

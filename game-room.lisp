@@ -1,6 +1,6 @@
 (in-package :hobbitvgiant)
 
-(defclass game-room (game-object)
+(defclass game-room (game-object named-object)
   ((description
     :initarg :description
     :initform "It's a room"
