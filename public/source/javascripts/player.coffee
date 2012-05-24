@@ -22,7 +22,7 @@ $ ->
         player.currentHealth = playerData.currentHealth
         player.maxHealth = playerData.maxHealth
         $("#name").text player.name
-        $("#health .text").text healthPercentage()
+        $("#health .text").text player.healthPercentage()
 
   $("#new-health").change ->
     gameSocket.send $(this).val()

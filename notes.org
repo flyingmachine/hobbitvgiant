@@ -173,3 +173,7 @@ list is stored in a slot
 *** assigned to hobbit or giant
 ** view stats
 *** yourself
+*** others in the same room
+** attack other character
+*** health goes down
+*** health slowly regenerates
