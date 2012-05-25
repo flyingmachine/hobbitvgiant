@@ -97,6 +97,9 @@
           pairs)
     h))
 
+(defun make-hash-from-pairsr (&rest pairs)
+  (make-hash-from-pairs (pairs pairs)))
+
 (defun mappend (fn &rest lsts)
   "maps elements in list and finally appends all resulted lists."
   (apply #'append (apply #'mapcar fn lsts)))

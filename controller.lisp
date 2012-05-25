@@ -23,7 +23,7 @@
           (notification-handlers player))
 
     (mapc (lambda (other-client)
-            (clws:write-to-client-text other-client (json-out (list (list 'add (list (serialize (body player))))))))
+            (clws:write-to-client-text other-client (json-out (make-hash-from-pairsr 'add (list (list (make-hash-from-pairsr 'body (serialize (body player)))))))))
           *clients*))
   
   (push client *clients*)
