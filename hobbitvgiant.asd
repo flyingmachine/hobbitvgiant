@@ -26,5 +26,6 @@
                (:file "engagement")
                (:file "web-server")
                (:file "clws-server")
+               (:file "view")
                (:file "controller")
                (:file "tests")))

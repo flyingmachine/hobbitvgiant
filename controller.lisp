@@ -3,10 +3,6 @@
 (defparameter *players* (make-hash-table))
 (defparameter *room* nil)
 
-(defun json-out (list)
-  (with-output-to-string (*standard-output*)
-    (json:encode-json list)))
-
 (defun start-game ()
   (start-clws)
   (setf *room* (make-instance 'game-room

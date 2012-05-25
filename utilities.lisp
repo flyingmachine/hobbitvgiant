@@ -71,6 +71,14 @@
 (defun alist-keys (alist)
   (mapcar #'car alist))
 
+(defun flatten-alist (alist)
+  (let ((flat nil))
+    (mapc (lambda (pair)
+            (push (car pair) flat)
+            (push (cdr pair) flat))
+          alist)
+    (nreverse flat)))
+
 (defun assocar (key alist)
   (car (assoc key alist)))
 
@@ -81,6 +89,13 @@
   (mapcar (lambda (key)
             (cons key (cdr (assoc key value-source))))
           (alist-keys key-source)))
+
+(defun make-hash-from-pairs (pairs)
+  (let1 h (make-hash-table)
+    (mapc (lambda (pair)
+            (setf (gethash (first pair) h) (if (consp (cdr pair)) (second pair) (cdr pair))))
+          pairs)
+    h))
 
 (defun mappend (fn &rest lsts)
   "maps elements in list and finally appends all resulted lists."

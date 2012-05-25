@@ -121,8 +121,8 @@
       (call-next-method)))
 
 (defmethod serialize ((body body))
-  (list (keyed-pair name body)
-        (keyed-pair id body)
-        (keyed-pair current-health body)
-        (keyed-pair max-health body)
-        (cons 'body-parts (mapcar #'serialize (body-parts body)))))
+  (make-hash-from-pairs (list (keyed-pair name body)
+                              (keyed-pair id body)
+                              (keyed-pair current-health body)
+                              (keyed-pair max-health body)
+                              (list 'body-parts (mapcar #'serialize (body-parts body))))))

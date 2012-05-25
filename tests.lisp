@@ -59,3 +59,7 @@
 
 (move-to-room (gethash 'hobbit *test-objs*) (gethash 'office *test-objs*))
 (move-to-room (gethash 'giant *test-objs*)  (gethash 'office *test-objs*))
+
+
+(defun test-json-serializer ()
+  (json:encode-json (serialize (gethash 'hobbit *test-objs*))))
