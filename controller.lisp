@@ -18,20 +18,30 @@
                                :body (make-body 'humanoid))))
     (move-to-room (body player) *room*)
     (setf (gethash client *players*) player)
+    ;; add observer
     (push (lambda (player channel event)
             (clws:write-to-client-text client (json-out event)))
           (notification-handlers player))
 
+    ;; send this player to all clients, includ
     (mapc (lambda (other-client)
             (clws:write-to-client-text other-client (json-out (make-hash-from-pairsr 'add (list (list (make-hash-from-pairsr 'body (serialize (body player)))))))))
-          *clients*))
-  
+          (append1 *clients* client))
+
+    ;; send all other players to client
+    ;; this must come after the player's character is initially sent,
+    ;; as the client code assumes that the first player received
+    ;; belongs to you
+    (clws:write-to-client-text client (json-out (make-hash-from-pairsr 'add (list (mappend (lambda (player) (make-hash-from-pairsr 'body (serialize (body player)))) (hash-values *players*))))))
+
+
+    )
   (push client *clients*)
   t)
 
 (defmethod clws:resource-client-disconnected ((resource hvg-resource) client)
   ;; TODO delete hash element
-  (setf (gethash client *players*) nil)
+  (remhash client *players*)
   (setf *clients* (remove client *clients*)))
 
 (defmethod clws:resource-received-text ((res hvg-resource) client message)

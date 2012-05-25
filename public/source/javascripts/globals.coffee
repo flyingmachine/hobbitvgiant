@@ -1,3 +1,3 @@
 window.App = Ember.Application.create()
-App.models =
-  player: null
+App.models = {}
+App.views = {}

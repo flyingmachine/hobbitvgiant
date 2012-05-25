@@ -108,7 +108,7 @@
   (loop for key being the hash-keys of hash-table collect key))
        
 (defun hash-values (hash-table)
-  (loop for key being the hash-values of hash-table collect key))
+  (loop for value being the hash-values of hash-table collect value))
 
 (defmacro if-let ((varname form) &body body)
   `(let ((,varname ,form))

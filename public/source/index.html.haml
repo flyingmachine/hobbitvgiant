@@ -1,10 +1,15 @@
 - content_for :head do
   %title Hobbit v. Giant
 
-#player.panel
-  #name
-  #health
-    .text
+%script{:type => "text/x-handlebars", "data-template-name" => "player"}
+  #player.panel
+    {{#view App.views.PlayerView}}
+    Test
+    {{#with player}}
+    #name {{name}}
+    #health {{healthPercentage}}
+    {{/with}}
+    {{/view}}
 
 #panel
   %button#connector Connect!

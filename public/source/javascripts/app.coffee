@@ -1,5 +1,8 @@
 #= require "globals"
 #= require "player"
+#= require "player-controller"
+#= require "player-view"
+#= require "socket-controller"
 #= require "charts"
 #= require "charts/realtime-line"
 #= require "initialize"
