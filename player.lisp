@@ -1,20 +1,19 @@
 (in-package :hobbitvgiant)
 (defclass player (game-object named-object)
-  ((output-stream
-    :initarg :output-stream
-    :initform *standard-output*
-    :accessor output-stream)
-
-   (body
+  ((body
     :initarg  :body
-    :accessor body))
+    :accessor body)
+
+   (notification-handlers
+    :initarg :notification-handlers
+    :accessor notification-handlers
+    :initform nil))
   (:metaclass observable))
 
 (defmethod initialize-instance :after ((player player) &key)
   (setf (player (body player)) player))
 
 (defun notify-player (player channel event)
-  (format (output-stream player)
-          "~a has received a new event: ~a~%"
-          (name player)
-          (mkstr event)))
+  (mapc (lambda (notification-handler)
+          (funcall notification-handler player channel event))
+        (notification-handlers player)))

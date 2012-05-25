@@ -26,12 +26,9 @@
     (observe-each ((body-parts body) body-part 'damage-received 'room-notifier new)
       (setf (latest-event (game-room body))
             (list
+             'update
              (list 'body 
-                   (list ('id (id body))
-                         (cons 'body-parts
-                               (serialize body-part))
-                         (cons 'current-health
-                               (current-health body)))))))
+                   (serialize body)))))
     
     body))
 

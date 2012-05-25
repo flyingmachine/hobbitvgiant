@@ -167,6 +167,10 @@ list is stored in a slot
 ** How do I get coffeescript involved?
 * server
 ** when do WS threads get created?
+** layers
+*** server layer
+*** controller -> command interpreter, set up listeners
+*** game engine
 * MVP
 ** Create a character:
 *** name

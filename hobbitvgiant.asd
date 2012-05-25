@@ -25,6 +25,6 @@
                (:file "combat")
                (:file "engagement")
                (:file "web-server")
-               (:file "clws-server-interface")
                (:file "clws-server")
+               (:file "controller")
                (:file "tests")))
