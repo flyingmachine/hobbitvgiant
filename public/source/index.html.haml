@@ -1,17 +1,27 @@
 - content_for :head do
   %title Hobbit v. Giant
 
-%script{:type => "text/x-handlebars", "data-template-name" => "player"}
-  #player.panel
-    {{#view App.views.PlayerView}}
-    Test
-    {{#with player}}
-    #name {{name}}
-    #health {{healthPercentage}}
-    {{/with}}
-    {{/view}}
+%script{:type => "text/x-handlebars", "data-template-name" => "current-player"}
+  {{#with player}}
+  #name {{name}}
+  #health {{healthPercentage}}
+  {{/with}}
 
-#panel
-  %button#connector Connect!
-  %br/
-  %input#new-health/
+%script{:type => "text/x-handlebars", "data-template-name" => "player"}
+  #name {{content.name}}
+  #health {{content.healthPercentage}}
+
+  
+#player.panel
+  %h2 Current Player
+
+#players.panel
+  %h2 Players
+
+#login
+  %form#login-form
+    %input#name{:placeholder => "Name"}/
+    %input#connector{:type => "submit", :value => "Connect!"} 
+
+#update-health
+  %input#new-health{:placeholder => "Damage Sustained"}

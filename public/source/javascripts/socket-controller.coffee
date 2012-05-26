@@ -1,12 +1,14 @@
 App.gameSocket = null
-  
 $ ->
   addObject = (object) ->
-    if object.body?
-      if App.playerController.currentPlayer
-        App.playerController.players.push(App.models.Player.create object.body)
-      else
-        App.playerController.set "currentPlayer", App.models.Player.create(object.body)
+    console.log object
+    if object.currentPlayer?
+      console.log "Adding current player"
+      App.controllers.player.set "currentPlayer", App.Player.create(object.currentPlayer)
+    else
+      console.log "Adding player"
+      App.controllers.player.players.pushObject(App.Player.create object.player)
+
   
   processMessage = (message) ->
     if message.add?
@@ -14,16 +16,19 @@ $ ->
     if message.destroy?
       destroyObject object for object in message.destroy
   
-  $("#connector").click ->
+  $("#login-form").submit ->
     unless App.gameSocket
-      gameSocket = new WebSocket("ws://localhost:12345/game?#{$(@).val()}")
-      gameSocket.onopen = (event) ->
+      App.gameSocket = new WebSocket("ws://localhost:12345/game?#{$("#name").val()}")
+      App.gameSocket.onopen = (event) ->
         console.log "Opened!"
+        $("#login").hide()
+        $("#update-health").show()
 
-      gameSocket.onmessage = (event) ->
-        console.log event.data
+      App.gameSocket.onmessage = (event) ->
         data = JSON.parse(event.data)
         processMessage data
+        
+    false
 
   $("#new-health").change ->
-    gameSocket.send $(this).val()
+    App.gameSocket.send $(this).val()

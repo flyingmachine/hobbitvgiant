@@ -1,6 +1,6 @@
 gameSocket = undefined
 
-App.models.Player = Ember.Object.extend
+App.Player = Ember.Object.extend
   currentHealth: null
   maxHealth: null
   name: null
