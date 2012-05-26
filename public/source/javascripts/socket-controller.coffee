@@ -26,6 +26,8 @@ $ ->
 
       App.gameSocket.onmessage = (event) ->
         data = JSON.parse(event.data)
+        console.log "Received data"
+        console.log data
         processMessage data
         
     false
